@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>StayPet — High-fi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ===== Icon system: authored SVG, one 24px grid, 1.75 stroke ===== -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="i-heart" viewBox="0 0 24 24">
+    <path d="M12 20.5s-7.4-4.6-9.1-9C1.6 8.2 3.3 5 6.4 4.4c2-.4 3.9.5 4.9 2.1h1.4c1-1.6 2.9-2.5 4.9-2.1C20.7 5 22.4 8.2 21.1 11.5c-1.7 4.4-9.1 9-9.1 9Z" fill="currentColor"/>
+  </symbol>
+  <symbol id="i-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
+    <path d="M6.5 6.5 17.5 17.5M17.5 6.5 6.5 17.5"/>
+  </symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M5 12.5 10 17.5 19 7"/>
+  </symbol>
+  <symbol id="i-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14.5 5 8 12l6.5 7"/>
+  </symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 20h4.2l9.1-9.1a2.1 2.1 0 0 0 0-3l-1.2-1.2a2.1 2.1 0 0 0-3 0L4 15.8V20Z"/><path d="M14.2 6.6l3.2 3.2"/>
+  </symbol>
+  <symbol id="i-cushion" viewBox="0 0 48 32" fill="none">
+    <path d="M6 22c-2-6 2-13 10-15 5.5-1.4 11-1.4 16 0 8 2 12 9 10 15-1.4 4.2-8 7-18 7S7.4 26.2 6 22Z" fill="#CBBBA0" stroke="#A8957A" stroke-width="1.5"/>
+    <path d="M13 12c6 4 16 4 22 0" stroke="#A8957A" stroke-width="1.4" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="i-ball" viewBox="0 0 32 32" fill="none">
+    <circle cx="16" cy="16" r="12" fill="#D98C6A" stroke="#B26B4C" stroke-width="1.5"/>
+    <path d="M4.6 13c7 2.5 16.8 2.5 22.8 0M16 4.2c-3.4 6.6-3.4 17 0 23.6" stroke="#B26B4C" stroke-width="1.4"/>
+  </symbol>
+  <symbol id="i-scarf" viewBox="0 0 32 32" fill="none">
+    <path d="M8 11c4.6 3.2 11.4 3.2 16 0l2.4 4.6c-5.6 3.8-15.2 3.8-20.8 0L8 11Z" fill="#B2647A" stroke="#8D4A5E" stroke-width="1.4"/>
+    <path d="M11 17.4 9 26l5-2.6 1.2-5.2" fill="#B2647A" stroke="#8D4A5E" stroke-width="1.4" stroke-linejoin="round"/>
+  </symbol>
+  <symbol id="i-bowl" viewBox="0 0 48 32" fill="none">
+    <ellipse cx="24" cy="11" rx="15" ry="5" fill="#E7D7BC" stroke="#A8906B" stroke-width="1.4"/>
+    <path d="M9 11c0 9 6.7 15 15 15s15-6 15-15" fill="#CBB48D" stroke="#A8906B" stroke-width="1.5"/>
+    <ellipse cx="24" cy="11" rx="10.5" ry="3.4" fill="#B08E5E" opacity=".55"/>
+  </symbol>
+  <symbol id="i-rug" viewBox="0 0 48 32" fill="none">
+    <ellipse cx="24" cy="17" rx="20" ry="10.5" fill="#CBB89A" stroke="#A8957A" stroke-width="1.4"/>
+    <ellipse cx="24" cy="17" rx="13" ry="6.6" fill="none" stroke="#B7A181" stroke-width="1.2"/>
+    <ellipse cx="24" cy="17" rx="6" ry="3" fill="none" stroke="#B7A181" stroke-width="1.2"/>
+  </symbol>
+  <symbol id="i-chair" viewBox="0 0 48 32" fill="none">
+    <path d="M16 4h14a3 3 0 0 1 3 3v12H16V4Z" fill="#C6A377" stroke="#9B7A50" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M13 19h23v4H13z" fill="#D2B187" stroke="#9B7A50" stroke-width="1.4"/>
+    <path d="M16 23v6M33 23v6" stroke="#9B7A50" stroke-width="1.8" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="i-bed" viewBox="0 0 48 32" fill="none">
+    <path d="M5 20c0-7 8-11 19-11s19 4 19 11c0 4-8 6-19 6S5 24 5 20Z" fill="#C9B396" stroke="#A08A6C" stroke-width="1.5"/>
+    <ellipse cx="24" cy="19" rx="12" ry="4.6" fill="#E0D2BB" stroke="#A08A6C" stroke-width="1.2"/>
+  </symbol>
+  <symbol id="i-sofa" viewBox="0 0 48 32" fill="none">
+    <path d="M7 12a4 4 0 0 1 8 0v7H7v-7ZM33 12a4 4 0 0 1 8 0v7h-8v-7Z" fill="#B99C84" stroke="#8E7460" stroke-width="1.4"/>
+    <path d="M12 9a3 3 0 0 1 3-3h18a3 3 0 0 1 3 3v10H12V9Z" fill="#C9AE97" stroke="#8E7460" stroke-width="1.5"/>
+    <path d="M7 19h34v5H7z" fill="#D4BBA4" stroke="#8E7460" stroke-width="1.4"/>
+    <path d="M11 24v4M37 24v4" stroke="#8E7460" stroke-width="1.7" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="i-bone" viewBox="0 0 32 32" fill="none">
+    <path d="M9.5 12a3.4 3.4 0 1 1 2.6 3.3l8 .1a3.4 3.4 0 1 1 2.7 3.4 3.4 3.4 0 1 1-2.8-5.3l-7.9-.1A3.4 3.4 0 1 1 9.5 12Z" fill="#E6D8BE" stroke="#B5A183" stroke-width="1.4" stroke-linejoin="round"/>
+  </symbol>
+  <symbol id="i-rope" viewBox="0 0 32 32" fill="none">
+    <path d="M7 20c3-6 6 2 9-4s6 2 9-4" stroke="#C09A6A" stroke-width="3.4" stroke-linecap="round"/>
+    <path d="M5 22l-2 3M27 10l2-3" stroke="#C09A6A" stroke-width="2.4" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="i-hat" viewBox="0 0 32 32" fill="none">
+    <path d="M10 17c0-5 2.6-8 6-8s6 3 6 8" fill="#8E7CA8" stroke="#6C5C86" stroke-width="1.5"/>
+    <path d="M5 18h22a1.6 1.6 0 0 1 0 3.2H5A1.6 1.6 0 0 1 5 18Z" fill="#9A88B4" stroke="#6C5C86" stroke-width="1.4"/>
+  </symbol>
+  <symbol id="i-coat" viewBox="0 0 32 32" fill="none">
+    <path d="M12 7l4 2.4L20 7l5 3v14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V10l5-3Z" fill="#7F8E9E" stroke="#5D6B79" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M16 9.4V26" stroke="#5D6B79" stroke-width="1.3"/>
+  </symbol>
+  <symbol id="i-paw" viewBox="0 0 32 32" fill="none">
+    <ellipse cx="16" cy="21" rx="6.4" ry="5.2" fill="currentColor"/>
+    <ellipse cx="8.6" cy="14.4" rx="2.7" ry="3.4" fill="currentColor"/>
+    <ellipse cx="14" cy="11.4" rx="2.7" ry="3.6" fill="currentColor"/>
+    <ellipse cx="19.8" cy="11.8" rx="2.7" ry="3.5" fill="currentColor"/>
+    <ellipse cx="24.4" cy="15.4" rx="2.6" ry="3.2" fill="currentColor"/>
+  </symbol>
+</defs></svg>
+
+<div id="device">
+
+  <!-- ==================== A. HOME ==================== -->
+  <section class="screen on" data-screen="home">
+    <div class="room" id="room">
+      <div class="window"></div>
+      <div class="glow"></div>
+      <div class="baseboard"></div>
+      <div class="floor"><div class="pool"></div></div>
+      <div class="rug"></div>
+      <div class="grain"></div>
+      <div class="room-note">실제 공간 사진이 들어갈 자리 (프로토타입 대체 배경)</div>
+    </div>
+    <div class="hud-scrim"></div>
+
+    <button class="hearts" id="hearts" type="button" aria-label="하트 잔액, 상점 열기">
+      <svg class="ic" width="17" height="17" aria-hidden="true"><use href="#i-heart"/></svg>
+      <span class="n" id="heartN">0</span>
+    </button>
+
+    <button class="life" id="life" type="button" aria-label="보리의 생활 상태">
+      <span class="lg"><svg class="g" id="gFull"  viewBox="0 0 24 24" aria-hidden="true"></svg><em>포만감</em></span>
+      <span class="lg"><svg class="g" id="gTired" viewBox="0 0 24 24" aria-hidden="true"></svg><em>피로도</em></span>
+      <span class="lg"><svg class="g" id="gFun"   viewBox="0 0 24 24" aria-hidden="true"></svg><em>즐거움</em></span>
+    </button>
+
+    <div class="visit" id="visit">
+      <div class="vt"><b id="visitStreak">이번 달 1일 연속으로 만났어요</b><br><span style="color:var(--text-2)">오늘도 보리가 기다리고 있었어요.</span></div>
+      <span class="vh"><svg class="ic" width="15" height="15" aria-hidden="true"><use href="#i-heart"/></svg><span id="visitHeart">2</span></span>
+      <button class="vok" id="visitOk" type="button">받기</button>
+    </div>
+
+    <button class="edit-fab" id="editFab" type="button" aria-label="놓은 물건 옮기기">
+      <svg width="21" height="21" aria-hidden="true"><use href="#i-edit"/></svg>
+    </button>
+  </section>
+
+  <!-- ==================== C. SHOP ==================== -->
+  <section class="screen shop" data-screen="shop">
+    <div class="shop-head">
+      <div class="shop-top">
+        <button class="icon-btn" id="shopBack" type="button" aria-label="홈으로">
+          <svg width="22" height="22" aria-hidden="true"><use href="#i-back"/></svg>
+        </button>
+        <span class="shop-title">상점</span>
+        <span class="shop-bal">
+          <svg class="ic" width="15" height="15" aria-hidden="true"><use href="#i-heart"/></svg>
+          <span id="shopN">0</span>
+        </span>
+      </div>
+      <div class="tabs" role="tablist" id="tabs">
+        <button class="tab" role="tab" data-cat="furniture" aria-selected="true">가구</button>
+        <button class="tab" role="tab" data-cat="behavior"  aria-selected="false">행동</button>
+        <button class="tab" role="tab" data-cat="toy"       aria-selected="false">장난감</button>
+        <button class="tab" role="tab" data-cat="clothing"  aria-selected="false">옷</button>
+      </div>
+    </div>
+    <div class="catalog scroll" id="catalog"></div>
+  </section>
+
+  <!-- state sheet -->
+  <div class="sheet-wrap" id="sheetWrap">
+    <div class="backdrop" data-close-sheet></div>
+    <div class="sheet" role="dialog" aria-label="보리의 생활 상태">
+      <div class="grab"></div>
+      <div class="state-row">
+        <svg class="g" id="sFull" viewBox="0 0 24 24" aria-hidden="true"></svg>
+        <span class="sn">포만감</span><span class="sv" id="vFull"></span>
+      </div>
+      <div class="state-row">
+        <svg class="g" id="sTired" viewBox="0 0 24 24" aria-hidden="true"></svg>
+        <span class="sn">피로도</span><span class="sv" id="vTired"></span>
+      </div>
+      <div class="state-row">
+        <svg class="g" id="sFun" viewBox="0 0 24 24" aria-hidden="true"></svg>
+        <span class="sn">즐거움</span><span class="sv" id="vFun"></span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

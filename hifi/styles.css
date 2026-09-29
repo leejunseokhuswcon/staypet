@@ -1,0 +1,683 @@
+/* ============================================================
+   StayPet — High-fi visual language v1
+   "다시, 함께 지내는 일상."
+   The room is the page. The interface belongs to the room's air.
+   ============================================================ */
+
+/* ---------- Tokens ---------- */
+:root {
+  /* Neutrals — warm greige, deliberately not the cream-paper default */
+  --n-0:   #FFFDFA;
+  --n-50:  #F7F3ED;
+  --n-100: #EBE4DA;
+  --n-200: #D8CEC1;
+  --n-300: #BCB1A1;
+  --n-500: #8A8073;
+  --n-700: #574F45;
+  --n-900: #211C17;   /* warm brown-black, the ink of this world */
+
+  /* Brand — 보리 = barley. Golden grain, not terracotta. */
+  --barley-100: #F6E6C9;
+  --barley-300: #E2BC7C;
+  --barley-500: #C08A3E;   /* the StayPet accent */
+  --barley-700: #8A5F22;   /* accessible on light surfaces */
+
+  /* Reward — muted rose, kept clearly apart from the gold */
+  --heart-300: #E8A3AC;
+  --heart-500: #C4566B;
+  --heart-700: #8E3546;
+
+  /* Calm counterweights */
+  --sage-500:  #6E8062;    /* valid / settled */
+  --sage-100:  #DDE3D6;
+  --dusk-500:  #8B90A6;    /* sleep, moon, evening */
+  --dusk-100:  #DCDEE6;
+
+  /* Semantic surfaces */
+  --bg-app:       var(--n-50);
+  --surface:      var(--n-0);
+  --surface-sunk: var(--n-50);
+  --line:         var(--n-100);
+  --line-strong:  var(--n-200);
+
+  --text:         var(--n-900);
+  --text-2:       var(--n-700);
+  --text-3:       var(--n-500);
+  --text-on-dark: #FBF7F1;
+  --text-on-dark-2: rgba(251,247,241,.72);
+
+  /* Scrims — for UI that must survive an unpredictable home photo */
+  --scrim-pill:  rgba(28,23,18,.58);
+  --scrim-deep:  rgba(24,19,15,.76);
+  --scrim-top:   linear-gradient(to bottom, rgba(24,19,15,.26) 0%, rgba(24,19,15,.09) 52%, rgba(24,19,15,0) 100%);
+  --scrim-bottom:linear-gradient(to top,   rgba(24,19,15,.46) 0%, rgba(24,19,15,.14) 52%, rgba(24,19,15,0) 100%);
+
+  --disabled-fg: var(--n-300);
+  --disabled-bg: var(--n-50);
+
+  /* Spacing — 4/8 rhythm */
+  --s-1: 4px;  --s-2: 8px;  --s-3: 12px; --s-4: 16px;
+  --s-5: 20px; --s-6: 24px; --s-8: 32px; --s-10: 40px; --s-12: 48px;
+
+  /* Radius */
+  --r-sm: 8px; --r-md: 14px; --r-lg: 22px; --r-full: 999px;
+
+  /* Depth — every shadow carries offset + blur */
+  --sh-1: 0 1px 2px rgba(33,28,23,.10), 0 2px 8px rgba(33,28,23,.06);
+  --sh-2: 0 4px 12px rgba(33,28,23,.12), 0 12px 28px rgba(33,28,23,.10);
+  --sh-lift: 0 10px 24px rgba(33,28,23,.22), 0 24px 48px rgba(33,28,23,.16);
+  --sh-onphoto: 0 2px 10px rgba(16,12,9,.28), 0 8px 24px rgba(16,12,9,.18);
+
+  /* Motion */
+  --e-out: cubic-bezier(.22,.9,.28,1);
+  --e-soft: cubic-bezier(.34,.9,.42,1);
+  --t-fast: 140ms; --t-base: 240ms; --t-slow: 420ms;
+
+  /* Type */
+  --f-ui: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
+          "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+  --f-voice: "Noto Serif KR", "Apple SD Gothic Neo", "Nanum Myeongjo", serif;
+
+  --safe-top: 44px;
+  --safe-bottom: 34px;
+}
+
+/* ---------- Reset & browser surfaces ---------- */
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  font-family: var(--f-ui);
+  font-size: 16px; line-height: 1.6; color: var(--text);
+  background: #CFC7BC;
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+  min-height: 100vh; overflow-x: hidden;
+}
+
+::selection { background: var(--barley-100); color: var(--n-900); }
+:focus-visible { outline: 2px solid var(--barley-500); outline-offset: 2px; border-radius: 4px; }
+button:focus:not(:focus-visible) { outline: none; }
+
+.scroll { scrollbar-width: thin; scrollbar-color: var(--n-200) transparent; }
+.scroll::-webkit-scrollbar { width: 6px; }
+.scroll::-webkit-scrollbar-thumb { background: var(--n-200); border-radius: var(--r-full); }
+.scroll::-webkit-scrollbar-track { background: transparent; }
+
+/* ---------- Device frame (prototype chrome only) ---------- */
+#device {
+  position: relative; width: 390px; height: 844px; overflow: hidden;
+  background: var(--bg-app); margin: 0 auto;
+}
+@media (min-width: 486px) and (min-height: 900px) {
+  body { padding: 28px 0; }
+  #device { border-radius: 40px; box-shadow: var(--sh-lift); }
+}
+
+.screen {
+  position: absolute; inset: 0; display: none; flex-direction: column;
+}
+.screen.on { display: flex; }
+
+/* ============================================================
+   THE ROOM — full bleed, never inside a card.
+   Placeholder for the user's real home photo.
+   ============================================================ */
+/* The room is built on value structure, the way an interior photograph is:
+   a bright window, a mid-value wall, a darker floor, and one pool of light
+   thrown across it. Every edge is soft; nothing here is a crisp vector shape. */
+.room {
+  position: absolute; inset: 0; overflow: hidden;
+  background: linear-gradient(to bottom, #EFE7DA 0%, #E6DACA 24%, #D8C9B4 37%);
+}
+/* window — the light source the whole scene is lit by */
+.window {
+  position: absolute; left: 7%; top: 11%; width: 38%; height: 22%;
+  border-radius: 6px;
+  background: linear-gradient(168deg, #FFFCF2 0%, #FDF3DC 58%, #F6E7C8 100%);
+  box-shadow: 0 0 0 5px rgba(247,240,226,.9), 0 10px 30px rgba(255,244,214,.75),
+              0 2px 3px rgba(96,72,44,.16);
+}
+.window::after {                 /* a soft mullion, blurred like real glass */
+  content: ""; position: absolute; left: 50%; top: 6%; bottom: 6%; width: 3px;
+  transform: translateX(-50%); background: rgba(160,132,92,.34); filter: blur(1.4px);
+}
+.glow {                          /* bloom spilling onto the wall */
+  position: absolute; left: -14%; top: -12%; width: 78%; height: 62%;
+  background: radial-gradient(52% 52% at 42% 44%, rgba(255,250,236,.92) 0%, rgba(255,246,222,.34) 46%, rgba(255,246,222,0) 76%);
+  filter: blur(16px); pointer-events: none;
+}
+.room::after {                   /* corner falloff keeps the eye centre-low */
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(84% 56% at 46% 62%, rgba(0,0,0,0) 34%, rgba(46,32,18,.30) 100%);
+}
+.grain {
+  position: absolute; inset: 0; pointer-events: none; opacity: .07; mix-blend-mode: multiply;
+  background-image: radial-gradient(rgba(110,86,56,.6) .5px, transparent .6px);
+  background-size: 2px 2px;
+}
+.baseboard {
+  position: absolute; left: 0; right: 0; bottom: 62%; height: 10px;
+  background: linear-gradient(to bottom, #F4ECDF 0%, #E6D9C3 62%, #C9B79A 100%);
+  box-shadow: 0 5px 12px rgba(58,38,18,.28);
+}
+.floor {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 62%;
+  background:
+    linear-gradient(to bottom, rgba(48,28,10,.30) 0, rgba(48,28,10,0) 54px),
+    repeating-linear-gradient(90deg, rgba(74,46,20,.16) 0 2px, rgba(74,46,20,0) 2px 62px),
+    linear-gradient(to bottom, #9C7B50 0%, #A98862 30%, #B0906A 62%, #9E7F58 100%);
+}
+/* the light pool the window throws on the floor — the brightest thing down here */
+.pool {
+  position: absolute; left: -4%; top: 0; width: 62%; height: 46%;
+  background: radial-gradient(54% 58% at 42% 34%, rgba(255,246,224,.62) 0%, rgba(255,244,218,.2) 50%, rgba(255,244,218,0) 78%);
+  transform: skewX(-16deg); filter: blur(7px); pointer-events: none;
+}
+.rug {
+  position: absolute; left: 11%; right: 11%; bottom: 13%; height: 18%;
+  border-radius: 50% / 48%;
+  background:
+    repeating-radial-gradient(50% 50% at 50% 50%, rgba(255,250,240,.055) 0 7px, rgba(255,250,240,0) 7px 16px),
+    radial-gradient(64% 84% at 50% 40%, #CDBB98 0%, #BFAA85 58%, #AE9770 100%);
+  box-shadow: 0 5px 18px rgba(46,30,14,.30), inset 0 1px 0 rgba(255,250,240,.22);
+}
+.room-note {   /* facilitator-only annotation, hidden from participants */
+  position: absolute; top: 6px; left: 6px; z-index: 40; display: none;
+  font-size: 10px; color: var(--text-on-dark-2);
+  background: var(--scrim-pill); padding: 2px 6px; border-radius: var(--r-sm);
+}
+body.annotate .room-note { display: block; }
+
+/* ============================================================
+   BORI
+   ============================================================ */
+.pet {
+  position: absolute; width: 166px; height: 153px; z-index: 12;
+  cursor: pointer; touch-action: none;
+  -webkit-touch-callout: none; user-select: none;
+  --step: 420ms;
+}
+/* direction changes rotate through, they never snap */
+.pet-flip { width: 100%; height: 100%; transition: transform 320ms cubic-bezier(.5,.05,.3,1); }
+.pet[data-facing="right"] .pet-flip { transform: scaleX(-1); }
+.pet svg { width: 100%; height: 100%; display: block; overflow: visible; }
+
+/* contact shadow — tightens and darkens as she settles, softens as she moves */
+.pet::before {
+  content: ""; position: absolute; left: 22%; right: 14%; bottom: 3px; height: 14px;
+  background: radial-gradient(50% 50% at 50% 52%, rgba(46,29,12,.66) 0%, rgba(46,29,12,.3) 44%, rgba(46,29,12,0) 76%);
+  filter: blur(2.6px); transition: opacity 240ms var(--e-out), transform 240ms var(--e-out);
+}
+.pet[data-act="moving"]::before { opacity: .72; transform: scaleX(1.06); }
+
+/* ---- breathing: always on, slower when she is resting ---- */
+.bori { transform-box: fill-box; transform-origin: 50% 82%; animation: breathe 4.4s var(--e-soft) infinite; }
+@keyframes breathe { 0%,100% { transform: scaleY(1) } 50% { transform: scaleY(1.016) } }
+
+/* ---- the walk ----
+   Four legs on two alternating phases, a body that rises on the push-off,
+   and a head that lags a beat behind the body. */
+.leg { transform-box: fill-box; transform-origin: 50% 7%; }
+.head { transform-box: fill-box; transform-origin: 74% 88%; }
+.tail { transform-box: fill-box; transform-origin: 4% 76%; }
+
+.pet[data-act="moving"] .bori { animation: breathe 4.4s var(--e-soft) infinite, bodybob var(--step) ease-in-out infinite; }
+.pet[data-act="moving"] .head { animation: headbob var(--step) ease-in-out infinite; }
+.pet[data-act="moving"] .leg-fn { animation: swingA var(--step) ease-in-out infinite; }
+.pet[data-act="moving"] .leg-bf { animation: swingA var(--step) ease-in-out infinite; }
+.pet[data-act="moving"] .leg-ff { animation: swingB var(--step) ease-in-out infinite; }
+.pet[data-act="moving"] .leg-bn { animation: swingB var(--step) ease-in-out infinite; }
+.pet[data-act="moving"] .tail  { animation: wag calc(var(--step) * .8) ease-in-out infinite; }
+
+@keyframes swingA { 0%,100% { transform: rotate(15deg) } 50% { transform: rotate(-15deg) } }
+@keyframes swingB { 0%,100% { transform: rotate(-15deg) } 50% { transform: rotate(15deg) } }
+@keyframes bodybob { 0%,100% { transform: translateY(0) } 25% { transform: translateY(-2.2px) } 75% { transform: translateY(1.2px) } }
+@keyframes headbob { 0%,100% { transform: translateY(0) rotate(0) } 30% { transform: translateY(-1.6px) rotate(-1.2deg) } 70% { transform: translateY(.8px) rotate(.8deg) } }
+
+/* anticipation: she gathers herself before the first step */
+.pet[data-act="ready"] .bori { animation: breathe 4.4s var(--e-soft) infinite, gather 240ms var(--e-out); }
+@keyframes gather { 0% { transform: none } 60% { transform: translateY(1.6px) scaleY(.985) } 100% { transform: none } }
+/* the head leads: she looks where she is about to go */
+.pet[data-look-at="left"]  .head { transform: rotate(-4deg) translateX(-2px); }
+.pet[data-look-at="right"] .head { transform: rotate(4deg)  translateX(2px); }
+.head { transition: transform 300ms var(--e-out); }
+
+/* alert: ears and posture lift toward whatever caught her attention */
+.pet[data-act="alert"] .bori { animation: breathe 3.2s var(--e-soft) infinite; transform: translateY(-2px); }
+.pet[data-act="alert"] .tail { animation: wag .5s ease-in-out infinite; }
+
+/* sleepy: lower, slower, eyes heavy — readable before any text */
+.pet[data-act="sleepy"] { transform: translateY(4px); }
+.pet[data-act="sleepy"] .bori { animation: breathe 6.8s var(--e-soft) infinite; }
+.pet[data-act="sleepy"] .head { transform: rotate(-2deg) translateY(3px); }
+.pet[data-act="sleepy"] .eye-open { opacity: .25; }
+.pet[data-act="sleepy"] .eye-shut { opacity: .8; }
+.pet[data-act="sleepy"] .tail { animation: none; transform: rotate(-12deg); }
+.pet[data-act="sleepy"] .tongue { opacity: 0; }
+
+/* arriving: one small weight-shift, then stillness */
+.pet[data-act="settling"] .bori { animation: breathe 4.4s var(--e-soft) infinite, settle 520ms var(--e-out); }
+@keyframes settle { 0% { transform: translateY(-1.5px) } 55% { transform: translateY(1.2px) } 100% { transform: none } }
+
+/* idle: a slow tail and an occasional look, not a loop of tics */
+.pet[data-act="idle"] .tail { animation: wagslow 2.6s var(--e-soft) infinite; }
+@keyframes wagslow { 0%,100% { transform: rotate(-5deg) } 50% { transform: rotate(7deg) } }
+@keyframes wag { 0%,100% { transform: rotate(-12deg) } 50% { transform: rotate(14deg) } }
+
+/* rest / sleep */
+.pet[data-act="resting"], .pet[data-act="sleeping"] { transform: translateY(9px) scale(.97); }
+.pet[data-act="resting"] .bori, .pet[data-act="sleeping"] .bori { animation: breathe 6.6s var(--e-soft) infinite; }
+.pet[data-act="sleeping"] .tail, .pet[data-act="resting"] .tail { animation: none; transform: rotate(-16deg); }
+
+/* playing */
+.pet[data-act="playing"] .bori { animation: breathe 4.4s var(--e-soft) infinite, hop .58s var(--e-out) infinite; }
+.pet[data-act="playing"] .tail { animation: wag .32s ease-in-out infinite; }
+@keyframes hop { 0%,100% { transform: translateY(0) } 42% { transform: translateY(-11px) } }
+
+/* eating */
+.pet[data-act="eating"] .head { animation: munch .5s ease-in-out infinite; }
+@keyframes munch { 0%,100% { transform: translateY(0) rotate(0) } 50% { transform: translateY(2.4px) rotate(-2deg) } }
+
+.pet .eye-open { opacity: 1 } .pet .eye-shut { opacity: 0 }
+.pet[data-act="sleeping"] .eye-open, .pet[data-act="resting"] .eye-open { opacity: 0 }
+.pet[data-act="sleeping"] .eye-shut, .pet[data-act="resting"] .eye-shut { opacity: 1 }
+.pet[data-act="sleeping"] .tongue, .pet[data-act="resting"] .tongue { opacity: 0 }
+.pet[data-act="sleeping"] .mouth, .pet[data-act="resting"] .mouth { opacity: .5 }
+.pet .zzz { opacity: 0 }
+.pet[data-act="sleeping"] .zzz { opacity: 1; animation: zzz 3s var(--e-soft) infinite }
+@keyframes zzz { 0% { opacity:0; transform: translate(0,0) scale(.8) } 30% { opacity:.9 } 100% { opacity:0; transform: translate(8px,-22px) scale(1.1) } }
+
+/* Bori's voice — serif, because it is her life being described, not the app talking */
+.voice {
+  position: absolute; z-index: 14; pointer-events: none;
+  font-family: var(--f-voice); font-size: 14px; line-height: 1.3; color: var(--n-900);
+  background: rgba(255,253,250,.94); padding: 7px 12px 8px;
+  border-radius: 14px 14px 14px 4px; box-shadow: var(--sh-onphoto);
+  animation: voice-in var(--t-base) var(--e-out) both;
+  max-width: 190px;
+}
+@keyframes voice-in { from { opacity: 0; transform: translateY(6px) scale(.96); } to { opacity: 1; transform: none; } }
+
+/* ============================================================
+   HUD — two light elements, opposite corners. No dashboard.
+   ============================================================ */
+.hud-scrim { position: absolute; top: 0; left: 0; right: 0; height: 132px; background: var(--scrim-top); pointer-events: none; z-index: 15; }
+
+.hearts {
+  position: absolute; z-index: 20; top: calc(var(--safe-top) + 6px); left: var(--s-4);
+  display: inline-flex; align-items: center; gap: 7px;
+  min-height: 44px; padding: 0 15px 0 12px;
+  border-radius: var(--r-full);
+  background: var(--scrim-pill);
+  color: var(--text-on-dark);
+  box-shadow: var(--sh-onphoto);
+  font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;
+  border: none; font-family: inherit; cursor: pointer;
+  transition: transform var(--t-fast) var(--e-out), background var(--t-fast) linear;
+}
+.hearts:active { transform: scale(.96); }
+.hearts[data-locked="1"] { cursor: default; }
+.hearts .ic { color: var(--heart-300); }
+.hearts .n { letter-spacing: .01em; }
+.hearts.bump { animation: bump var(--t-slow) var(--e-out); }
+@keyframes bump { 0%{transform:none} 30%{transform:scale(1.14)} 100%{transform:none} }
+
+/* Life glyphs — one pill, three drawn indicators, no bars, no numbers.
+   포만감 fills. 즐거움 fills. 피로도 WAXES toward sleep: the indicator type
+   itself carries the reversed meaning. */
+/* Always on screen. Bori's condition is readable at a glance with no tap:
+   the glyph carries the level, the label says which state it is.
+   Tapping only adds the worded detail — nothing essential is hidden behind it. */
+.life {
+  position: absolute; z-index: 20; top: calc(var(--safe-top) + 6px); right: var(--s-4);
+  display: inline-flex; align-items: flex-start; gap: 14px;
+  padding: 8px 14px 7px;
+  border-radius: 18px;
+  background: rgba(26,21,16,.62); box-shadow: var(--sh-onphoto);
+  border: none; cursor: pointer; font-family: inherit;
+  transition: transform var(--t-fast) var(--e-out);
+}
+.life:active { transform: scale(.97); }
+.life .lg { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.life .g { width: 22px; height: 22px; display: block; color: var(--text-on-dark); }
+.life .g .fill { transition: all var(--t-slow) var(--e-soft); }
+.life em {
+  font-style: normal; font-size: 11.5px; font-weight: 600; line-height: 1;
+  letter-spacing: -.03em; color: rgba(252,248,242,.94);
+}
+
+/* Edit affordance — appears only when there is something to rearrange */
+.edit-fab {
+  position: absolute; z-index: 20; right: var(--s-4); bottom: calc(var(--safe-bottom) + 12px);
+  width: 46px; height: 46px; border-radius: var(--r-full);
+  background: var(--scrim-pill); box-shadow: var(--sh-onphoto);
+  border: none; cursor: pointer; display: none;
+  align-items: center; justify-content: center; color: var(--text-on-dark);
+  transition: transform var(--t-fast) var(--e-out), background var(--t-base) linear;
+}
+.edit-fab.show { display: inline-flex; }
+.edit-fab:active { transform: scale(.94); }
+.edit-fab.on { background: var(--barley-500); color: var(--n-900); }
+
+/* First-use hint — quiet, bottom, dismissed by doing the thing */
+.hint {
+  position: absolute; z-index: 22; left: var(--s-4); right: var(--s-4);
+  bottom: calc(var(--safe-bottom) + 18px);
+  text-align: center; font-size: 15px; font-weight: 500;
+  color: var(--text-on-dark); text-shadow: 0 1px 10px rgba(16,12,9,.8);
+  animation: hint-in var(--t-slow) var(--e-out) both;
+}
+@keyframes hint-in { from { opacity: 0; transform: translateY(8px);} to { opacity:1; transform:none; } }
+/* the ring sits on Bori, because she is what the sentence is about */
+/* parented to Bori when the hint is about her, so it tracks her exactly */
+.tapdot.on-pet { left: 52%; top: 8%; z-index: 3; }
+.tapdot {
+  position: absolute; z-index: 21; width: 13px; height: 13px; margin: -6px 0 0 -6px;
+  border-radius: var(--r-full); background: rgba(255,252,246,.96);
+  box-shadow: 0 0 14px rgba(255,246,222,.85), 0 1px 4px rgba(40,26,12,.5);
+  pointer-events: none;
+}
+.tapdot::after {                 /* the ring expands; the dot itself always stays */
+  content: ""; position: absolute; inset: -2px; border-radius: var(--r-full);
+  border: 2px solid rgba(255,252,246,.9);
+  animation: pulse 2s var(--e-soft) infinite;
+}
+@keyframes pulse { 0%{transform:scale(1);opacity:.9} 70%{transform:scale(3.1);opacity:0} 100%{transform:scale(3.1);opacity:0} }
+
+/* Visit reward — a small welcome, not a login demand */
+.visit {
+  position: absolute; z-index: 24; left: var(--s-4); right: var(--s-4); top: calc(var(--safe-top) + 58px);
+  display: none; align-items: center; gap: var(--s-3);
+  padding: 14px 14px 14px 16px; border-radius: var(--r-lg);
+  background: rgba(255,253,250,.96); box-shadow: var(--sh-2);
+  animation: visit-in var(--t-slow) var(--e-out) both;
+}
+.visit.show { display: flex; }
+@keyframes visit-in { from { opacity:0; transform: translateY(-10px) } to { opacity:1; transform:none } }
+.visit .vt { flex: 1; font-size: 14px; line-height: 1.45; color: var(--text); }
+.visit .vt b { font-weight: 700; }
+.visit .vh { display: inline-flex; align-items: center; gap: 5px; font-size: 15px; font-weight: 700;
+             color: var(--heart-700); font-variant-numeric: tabular-nums; }
+.visit .vok {
+  border: none; background: var(--n-900); color: var(--text-on-dark);
+  font-family: inherit; font-size: 14px; font-weight: 600;
+  min-height: 44px; padding: 0 18px; border-radius: var(--r-full); cursor: pointer;
+}
+.visit .vok:active { transform: scale(.96); }
+
+/* ============================================================
+   FOCUS — tapping Bori brings her close
+   ============================================================ */
+body.focused #hearts, body.focused #life, body.focused #editFab,
+body.focused #hint, body.focused #tapdot, body.focused #visit { display: none !important; }
+body.focused #room .pet, body.focused #room .voice { opacity: 0; }
+body.placing #hearts, body.placing #life, body.placing #editFab,
+body.placing #hint, body.placing #tapdot { display: none !important; }
+
+.focus { position: absolute; inset: 0; z-index: 30; display: flex; flex-direction: column; }
+/* The scrim establishes immediately — focus should feel like the room quiets
+   down, not like a panel fading in. Only Bori animates in. */
+.focus .backdrop {
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, rgba(20,15,11,.90), rgba(26,19,13,.80));
+  backdrop-filter: blur(16px) saturate(.88); -webkit-backdrop-filter: blur(16px) saturate(.88);
+}
+@keyframes fade { from { opacity: 0 } to { opacity: 1 } }
+.focus-bar {
+  position: relative; z-index: 2; display: flex; align-items: center;
+  padding-top: var(--safe-top); padding-left: var(--s-3); padding-right: var(--s-3);
+  min-height: calc(var(--safe-top) + 52px);
+}
+.close {
+  width: 44px; height: 44px; border-radius: var(--r-full); border: none;
+  background: rgba(251,247,241,.14); color: var(--text-on-dark);
+  display: inline-flex; align-items: center; justify-content: center; cursor: pointer;
+  transition: background var(--t-fast) linear, transform var(--t-fast) var(--e-out);
+}
+.close:active { transform: scale(.94); background: rgba(251,247,241,.24); }
+/* the balance stays visible so the reward is seen where it is earned,
+   but it is not a control here and it never shares space with the close target */
+.focus .hearts {
+  position: static !important; display: inline-flex !important;
+  margin-left: auto; pointer-events: none; opacity: .95;
+}
+
+.stage {
+  position: relative; z-index: 2; flex: 1;
+  display: flex; align-items: center; justify-content: center;
+  touch-action: none; overflow: hidden;
+}
+.stage .pet { position: static; width: 286px; height: 264px; animation: pet-in var(--t-slow) var(--e-out) both; }
+.stage .pet::before { left: 18%; right: 18%; bottom: -6px; height: 22px; opacity: .5; }
+@keyframes pet-in { from { opacity: 0; transform: scale(.88) translateY(14px); } to { opacity:1; transform:none; } }
+.stage .pet.glad { animation: glad var(--t-slow) var(--e-out); }
+@keyframes glad { 0%{transform:none} 35%{transform:scale(1.045) rotate(-1.4deg)} 100%{transform:none} }
+
+/* hearts rising from the rub point */
+.spark { position: absolute; z-index: 5; pointer-events: none; color: var(--heart-500);
+         animation: rise 1100ms var(--e-out) forwards; }
+@keyframes rise {
+  0%   { opacity: 0; transform: translate(-50%,-50%) scale(.5); }
+  22%  { opacity: 1; transform: translate(-50%,-70%) scale(1); }
+  100% { opacity: 0; transform: translate(-50%,-190%) scale(.85); }
+}
+
+.focus-foot { position: relative; z-index: 2; padding: 0 var(--s-5) calc(var(--safe-bottom) + 20px); text-align: center; }
+.rub-hint { font-size: 15px; font-weight: 500; color: var(--text-on-dark); }
+.rub-hint .trace {
+  position: relative; display: block; width: 96px; height: 20px; margin: 0 auto 16px;
+}
+.rub-hint .trace::before {
+  content: ""; position: absolute; left: 0; right: 0; top: 9px; height: 2px; border-radius: 2px;
+  background: repeating-linear-gradient(90deg, rgba(251,247,241,.55) 0 7px, transparent 7px 13px);
+}
+.rub-hint .trace::after {
+  content: ""; position: absolute; top: 2px; left: 0; width: 16px; height: 16px;
+  border-radius: var(--r-full); background: rgba(251,247,241,.96);
+  box-shadow: 0 0 0 6px rgba(251,247,241,.18);
+  animation: trace 2.6s var(--e-soft) infinite;
+}
+@keyframes trace { 0%,100% { transform: translateX(0) } 50% { transform: translateX(80px) } }
+.reaction {
+  font-family: var(--f-voice); font-size: 17px; line-height: 1.45; color: var(--text-on-dark);
+  min-height: 48px; display: flex; align-items: center; justify-content: center;
+  animation: voice-in var(--t-base) var(--e-out);
+}
+.reaction.reward { color: var(--barley-300); }
+
+/* Shop handoff line, still inside the focus context */
+.handoff {
+  position: absolute; inset: 0; z-index: 6; display: flex; align-items: center; justify-content: center;
+  background: var(--scrim-deep); animation: fade var(--t-base) var(--e-out) both;
+  padding: 0 var(--s-8); text-align: center;
+}
+.handoff p { font-family: var(--f-voice); font-size: 20px; line-height: 1.5; color: var(--text-on-dark); }
+.handoff .coin {
+  display: block; margin: 0 auto var(--s-5); color: var(--heart-500);
+  animation: coin var(--t-slow) var(--e-out) both;
+}
+@keyframes coin { from { opacity:0; transform: translateY(14px) scale(.7);} to {opacity:1;transform:none;} }
+
+/* ============================================================
+   SHOP — a catalogue for our home, not a marketplace
+   ============================================================ */
+.shop { background: var(--bg-app); }
+.shop-head {
+  position: sticky; top: 0; z-index: 5; background: rgba(247,243,237,.94);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+.shop-top {
+  display: flex; align-items: center; gap: var(--s-2);
+  padding: calc(var(--safe-top) + 6px) var(--s-3) var(--s-2);
+}
+.icon-btn {
+  width: 44px; height: 44px; border: none; background: transparent; color: var(--text);
+  display: inline-flex; align-items: center; justify-content: center; cursor: pointer;
+  border-radius: var(--r-full); transition: background var(--t-fast) linear;
+}
+.icon-btn:active { background: var(--n-100); }
+.shop-title { font-size: 17px; font-weight: 700; letter-spacing: -.01em; }
+.shop-bal {
+  margin-left: auto; display: inline-flex; align-items: center; gap: 6px;
+  font-size: 15px; font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums;
+  background: var(--n-0); border: 1px solid var(--line); border-radius: var(--r-full);
+  min-height: 36px; padding: 0 13px;
+}
+.shop-bal .ic { color: var(--heart-500); }
+
+.tabs { display: flex; gap: var(--s-1); padding: 0 var(--s-3) var(--s-2); }
+.tab {
+  flex: 1; min-height: 40px; border: none; background: transparent; cursor: pointer;
+  font-family: inherit; font-size: 15px; font-weight: 600; color: var(--text-3);
+  border-radius: var(--r-sm); position: relative;
+  transition: color var(--t-fast) linear;
+}
+.tab[aria-selected="true"] { color: var(--text); }
+.tab[aria-selected="true"]::after {
+  content: ""; position: absolute; left: 50%; transform: translateX(-50%);
+  bottom: -1px; width: 26px; height: 3px; border-radius: 3px 3px 0 0; background: var(--barley-500);
+}
+.tab:active { color: var(--text); }
+
+.catalog { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: calc(var(--safe-bottom) + 12px); }
+.cat-note { padding: var(--s-4) var(--s-5) var(--s-2); font-size: 13px; color: var(--text-3); }
+
+/* A list with hairlines and a small object vignette — not a grid of identical cards */
+.item {
+  display: flex; align-items: center; gap: var(--s-3);
+  padding: var(--s-3) var(--s-5);
+  border-bottom: 1px solid var(--line);
+  background: transparent; width: 100%; border-left: none; border-right: none; border-top: none;
+  text-align: left; font-family: inherit; cursor: pointer;
+  transition: background var(--t-fast) linear;
+}
+.item:active { background: var(--n-100); }
+.thumb {
+  width: 52px; height: 52px; flex: none; border-radius: var(--r-md);
+  background: radial-gradient(120% 120% at 30% 24%, var(--n-0) 0%, var(--n-100) 74%, var(--n-200) 100%);
+  display: flex; align-items: center; justify-content: center; color: var(--n-700);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.7), var(--sh-1);
+}
+.item-main { flex: 1; min-width: 0; }
+.item-name { display: block; font-size: 15px; font-weight: 600; color: var(--text); letter-spacing: -.01em;
+             overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.item-sub { display: block; font-size: 12px; color: var(--text-3); margin-top: 2px; }
+.price {
+  flex: none; display: inline-flex; align-items: center; gap: 5px;
+  font-size: 15px; font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums;
+}
+.price .ic { color: var(--heart-500); }
+.price.short { color: var(--text-3); }
+.price.short .ic { color: var(--n-300); }
+
+.act {
+  flex: none; min-height: 36px; min-width: 62px; padding: 0 14px;
+  border-radius: var(--r-full); border: 1px solid transparent;
+  font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: transform var(--t-fast) var(--e-out), background var(--t-fast) linear;
+}
+.act:active { transform: scale(.96); }
+.act[data-state="affordable"] { background: var(--n-900); color: var(--text-on-dark); }
+.act[data-state="placeable"]   { background: var(--barley-500); color: var(--n-900); }
+.act[data-state="owned"]       { background: var(--n-0); color: var(--text); border-color: var(--line-strong); }
+.act[data-state="equipped"],
+.act[data-state="active"]      { background: var(--sage-100); color: #33402C; cursor: default; }
+.act[data-state="short"] {
+  background: var(--disabled-bg); color: var(--disabled-fg);
+  border-color: var(--line); cursor: not-allowed;
+}
+.act[data-state="short"]:active { transform: none; }
+
+/* ============================================================
+   PLACEMENT — drag only, explicit confirm
+   ============================================================ */
+.obj {
+  position: absolute; z-index: 10;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  filter: drop-shadow(0 6px 10px rgba(52,36,20,.28));
+}
+.obj .shape { display: block; }
+.obj .tag {
+  font-size: 10px; font-weight: 600; color: var(--text-on-dark);
+  background: var(--scrim-pill); padding: 2px 7px; border-radius: var(--r-full);
+  opacity: 0; transition: opacity var(--t-fast) linear;
+}
+body.editing .obj .tag { opacity: 1; }
+body.editing .obj { animation: jiggle 2.6s var(--e-soft) infinite; }
+@keyframes jiggle { 0%,100%{transform:rotate(-.7deg)} 50%{transform:rotate(.7deg)} }
+
+/* a bowel event is environmental and blameless: no badge, no colour alarm */
+.obj.poop { filter: drop-shadow(0 3px 5px rgba(48,30,14,.4)); }
+.obj.poop .shape { animation: settle-in 420ms var(--e-out) both; }
+@keyframes settle-in { from { opacity: 0; transform: scale(.7) translateY(-4px) } to { opacity: 1; transform: none } }
+
+.ghost {
+  position: absolute; z-index: 26; touch-action: none; cursor: grab;
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+}
+.ghost .shape { opacity: 1; filter: drop-shadow(0 14px 20px rgba(52,36,20,.4)); }
+.ghost .ring {
+  position: absolute; left: 50%; bottom: -9px; transform: translateX(-50%);
+  width: 92%; min-width: 64px; height: 26px; border-radius: 50%;
+  border: 2px dashed var(--sage-500); background: rgba(110,128,98,.18);
+  transition: border-color var(--t-fast) linear, background var(--t-fast) linear;
+}
+.ghost.bad .ring { border-color: var(--n-300); background: rgba(188,177,161,.2); border-style: dotted; }
+.ghost.bad .shape { opacity: .5; }
+
+.place-bar {
+  position: absolute; z-index: 27; left: var(--s-4); right: var(--s-4); top: calc(var(--safe-top) + 12px);
+  padding: 12px 16px; border-radius: var(--r-md);
+  background: rgba(255,253,250,.96); box-shadow: var(--sh-2);
+  font-size: 14px; color: var(--text); text-align: center;
+}
+.place-bar b { font-weight: 700; }
+.confirm {
+  position: absolute; z-index: 28; width: 52px; height: 52px; border-radius: var(--r-full);
+  border: none; background: var(--sage-500); color: #fff; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  box-shadow: 0 6px 14px rgba(52,70,40,.34), 0 14px 32px rgba(52,70,40,.22);
+  transition: transform var(--t-fast) var(--e-out), background var(--t-base) linear;
+}
+.confirm:active { transform: scale(.94); }
+.confirm[disabled] { background: var(--n-200); color: var(--n-500); cursor: not-allowed; box-shadow: var(--sh-1); }
+
+/* ============================================================
+   Sheet — life state, named in Bori's voice
+   ============================================================ */
+.sheet-wrap { position: absolute; inset: 0; z-index: 34; display: none; }
+.sheet-wrap.on { display: block; }
+.sheet-wrap .backdrop { position: absolute; inset: 0; background: rgba(24,19,15,.44); animation: fade var(--t-base) var(--e-out) both; }
+.sheet {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  background: var(--surface); border-radius: var(--r-lg) var(--r-lg) 0 0;
+  padding: var(--s-3) var(--s-5) calc(var(--safe-bottom) + var(--s-5));
+  box-shadow: 0 -6px 18px rgba(33,28,23,.14), 0 -18px 44px rgba(33,28,23,.12);
+  animation: sheet-in var(--t-slow) var(--e-out) both;
+}
+@keyframes sheet-in { from { transform: translateY(100%);} to { transform: none; } }
+.grab { width: 36px; height: 4px; border-radius: var(--r-full); background: var(--n-200); margin: 0 auto var(--s-5); }
+.state-row { display: flex; align-items: center; gap: var(--s-4); padding: var(--s-3) 0; }
+.state-row + .state-row { border-top: 1px solid var(--line); }
+.state-row .g { width: 26px; height: 26px; flex: none; color: var(--text-2); }
+.state-row .sn { font-size: 15px; font-weight: 600; }
+.state-row .sv { margin-left: auto; font-family: var(--f-voice); font-size: 15px; color: var(--text-2); }
+
+.toast {
+  position: absolute; z-index: 36; left: 50%; transform: translateX(-50%);
+  bottom: calc(var(--safe-bottom) + 76px);
+  background: var(--n-900); color: var(--text-on-dark);
+  font-size: 14px; font-weight: 500; padding: 11px 18px; border-radius: var(--r-full);
+  box-shadow: var(--sh-2); animation: toast-in var(--t-base) var(--e-out) both;
+  display: flex; align-items: center; gap: 8px;
+}
+.toast .ic { color: var(--heart-300); }
+@keyframes toast-in { from { opacity:0; transform: translate(-50%, 10px);} to { opacity:1; transform: translate(-50%,0);} }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important;
+                           transition-duration: .001ms !important; }
+}

@@ -1,0 +1,314 @@
+/* StayPet Low-fi Wireframe — 구조·흐름·상태 검증용. 시각 디자인 아님.
+   회색조만 사용. 기본 상태는 참가자 모드(주석·가설·진행자 도구 모두 숨김). */
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Malgun Gothic", sans-serif;
+  background: #e8e8e8; color: #222; font-size: 13px; line-height: 1.45;
+  display: flex; justify-content: center; align-items: flex-start;
+  gap: 18px; padding: 18px; min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 진행자 모드 진입용 숨은 핫스팟 (참가자에게 보이지 않음) */
+#hot { position: fixed; top: 0; left: 0; width: 22px; height: 22px; z-index: 99; cursor: default; }
+
+/* ---------- 폰 프레임 ---------- */
+#stage { flex: none; }
+.frame {
+  width: 340px; height: 680px; background: #fff; border: 2px solid #222;
+  display: flex; flex-direction: column; overflow: hidden; position: relative;
+}
+.statusbar {
+  height: 18px; flex: none; background: #ddd; border-bottom: 1px solid #bbb;
+  font-size: 9px; color: #777; display: flex; align-items: center;
+  justify-content: space-between; padding: 0 8px;
+}
+.scr { display: none; flex: 1; flex-direction: column; overflow: hidden; }
+.scr.on { display: flex; }
+
+.navbar {
+  flex: none; min-height: 40px; border-bottom: 1px solid #333;
+  display: flex; align-items: center; gap: 8px; padding: 0 10px;
+  font-size: 12px; font-weight: 600;
+}
+.navbar.plain { border-bottom: none; }
+.navbar .back {
+  border: 1px solid #333; width: 26px; height: 24px; display: flex;
+  align-items: center; justify-content: center; font-size: 12px;
+  cursor: pointer; background: #fff; flex: none;
+}
+.navbar .right { margin-left: auto; font-weight: 400; font-size: 11px; color: #777; }
+
+.body-area { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+.body-area.nopad { padding: 0; }
+.body-area.center { justify-content: center; align-items: center; text-align: center; }
+.foot { flex: none; border-top: 1px solid #333; padding: 10px; display: flex; flex-direction: column; gap: 6px; background: #fff; }
+.foot.plain { border-top: none; }
+
+/* ---------- 기본 요소 ---------- */
+h3.title { font-size: 15px; line-height: 1.35; }
+p.body { font-size: 12px; color: #444; }
+.small { font-size: 11px; color: #777; }
+.label { font-size: 10px; color: #777; letter-spacing: .5px; }
+.divider { border-top: 1px solid #ddd; }
+
+.ph {
+  border: 1px dashed #999;
+  background-image: repeating-linear-gradient(45deg,#f0f0f0 0 6px,#f8f8f8 6px 12px);
+  display: flex; align-items: center; justify-content: center;
+  text-align: center; color: #777; font-size: 11px; padding: 8px;
+}
+.ph.h70{height:70px}.ph.h90{height:90px}.ph.h120{height:120px}.ph.h170{height:170px}.ph.grow{flex:1}
+
+.btn {
+  border: 1px solid #333; background: #fff; color: #222; padding: 9px 10px;
+  font: inherit; font-size: 12px; text-align: center; cursor: pointer;
+  display: block; width: 100%;
+}
+.btn.primary { background: #222; color: #fff; font-weight: 600; }
+.btn.disabled { border-color: #bbb; color: #bbb; background: #fafafa; cursor: not-allowed; }
+.btn.small { padding: 6px 8px; font-size: 11px; }
+.btnrow { display: flex; gap: 6px; }
+.btnrow .btn { flex: 1; }
+
+.field { border: 1px solid #666; padding: 9px 8px; font-size: 12px; background: #fff; width: 100%; font-family: inherit; }
+.field::placeholder { color: #aaa; }
+
+.chiprow { display: flex; flex-wrap: wrap; gap: 6px; }
+.chiprow.col { flex-direction: column; }
+.chip { border: 1px solid #666; padding: 7px 11px; font-size: 12px; background: #fff; cursor: pointer; user-select: none; text-align: center; }
+.chip.on { background: #222; color: #fff; border-color: #222; }
+.chip.wide { width: 100%; }
+.chip.sm { font-size: 10px; padding: 5px 7px; }
+
+.list { border: 1px solid #ccc; }
+.list .row { padding: 9px 10px; border-bottom: 1px solid #ddd; display: flex; align-items: center; gap: 8px; font-size: 12px; cursor: pointer; }
+.list .row:last-child { border-bottom: none; }
+.list .row .r { margin-left: auto; font-size: 11px; color: #777; }
+
+.msg { border: 1px solid #333; padding: 8px; font-size: 11px; }
+.msg .sub { color: #777; font-size: 10px; }
+
+.steps { display: flex; flex-direction: column; gap: 5px; width: 100%; text-align: left; }
+.steps .s { font-size: 11px; color: #999; }
+.steps .s.done { color: #222; }
+.steps .s.now { color: #222; font-weight: 700; }
+
+.cards { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.card { border: 1px solid #666; padding: 6px; cursor: pointer; }
+.card.sel { border-width: 3px; border-color: #222; }
+.card .cph { height: 78px; border: 1px dashed #999; background-image: repeating-linear-gradient(45deg,#f0f0f0 0 6px,#f8f8f8 6px 12px); display: flex; align-items: center; justify-content: center; font-size: 10px; color: #777; }
+.card .cn { font-size: 10px; text-align: center; margin-top: 4px; }
+
+/* ---------- 공간 / Home ---------- */
+.room {
+  position: relative; flex: 1; min-height: 240px; border: 1px dashed #999;
+  background-image: repeating-linear-gradient(45deg,#f0f0f0 0 8px,#f8f8f8 8px 16px);
+  overflow: hidden; touch-action: manipulation;
+}
+/* 검수용 메타 라벨 — 참가자 화면에는 나오지 않는다(진행자 모드 전용). */
+.roomlabel { display: none; }
+body.facil .roomlabel { display: block; position: absolute; top: 6px; left: 6px; font-size: 9px;
+  color: #888; background: #fff; padding: 1px 4px; border: 1px solid #ccc; z-index: 2; }
+.obj { position: absolute; border: 1px solid #333; background: #fff; font-size: 9px; padding: 4px 6px; text-align: center; cursor: pointer; }
+.obj.ghost { border-style: dashed; color: #999; background: #fafafa; }
+/* ---- 오브젝트 배치 (가구 배치 방식: 끌어 놓고 → 확인) ---- */
+.obj.ghost { touch-action: none; cursor: grab; }
+.obj.ghost.bad {                                   /* 닿을 수 없는 위치 — 글자 없이 상태로만 알린다 */
+  border-style: dotted; color: #bbb;
+  background-image: repeating-linear-gradient(45deg,#eee 0 4px,#fafafa 4px 8px);
+}
+.placebar {
+  position: absolute; left: 10px; right: 10px; top: 10px; z-index: 2;
+  border: 1px solid #333; background: #fff; padding: 7px;
+  font-size: 11px; text-align: center;
+}
+.okbtn {
+  position: absolute; width: 46px; height: 46px; border-radius: 50%;   /* 모바일 탭 타깃 >=44 */
+  border: 2px solid #222; background: #222; color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; line-height: 1; cursor: pointer; z-index: 3;
+  touch-action: none; user-select: none; -webkit-tap-highlight-color: transparent;
+}
+.room.placing { touch-action: none; }   /* 드래그 중 스크롤·팬이 제스처를 뺏지 않게 */
+.okbtn.off { border-color: #bbb; background: #fff; color: #bbb; cursor: not-allowed; }
+.bubble { position: absolute; border: 1px solid #666; background: #fff; font-size: 10px; padding: 3px 7px; pointer-events: none; }
+.hintbar { position: absolute; left: 10px; right: 10px; bottom: 10px; border: 1px solid #333; background: #fff; padding: 7px; font-size: 11px; text-align: center; }
+/* 확대 상태의 문지르기 안내. 반응 문구와 분리돼 있어 탭 반응이 지우지 않는다. */
+.zhint { flex: none; border-top: 1px dashed #999; background: #fafafa; padding: 7px 10px;
+         font-size: 11px; text-align: center; color: #333; }
+/* 휴식은 위치·지속시간과 함께 자세로도 읽혀야 한다(시각 장식이 아니라 상태 표현). */
+.pet.resting { transform: translateY(6px); }
+.pet.resting .p-ear { transform: rotate(-18deg); }
+.fx { position: absolute; border: 1px solid #222; background: #fff; font-size: 11px; padding: 2px 7px; font-weight: 700; pointer-events: none; }
+
+/* 캐릭터 — 최소 형태 단서(머리/몸통/뒤쪽 구분). 일러스트 아님. */
+/* touch-action/callout/select 억제는 시각 디자인이 아니라 입력 확보용이다.
+   iOS Safari 가 길게 누르기를 선택·콜아웃 제스처로 가로채면 pointerup 대신
+   pointercancel 이 발생해 "이동 없는 길게 누르기" 검증이 브라우저 탓에 틀어진다. */
+.pet { position: absolute; width: 108px; height: 66px; cursor: pointer; touch-action: none;
+       -webkit-touch-callout: none; -webkit-user-select: none; user-select: none;
+       transition: left .8s ease, top .8s ease; }
+.pet.zoom { transition: none; }
+.pet .p-head { position: absolute; left: 0; top: 0; width: 40px; height: 40px; border: 2px solid #333; border-radius: 50%; background: #fff; }
+.pet .p-ear { position: absolute; left: 4px; top: -8px; width: 14px; height: 16px; border: 2px solid #333; border-bottom: none; background: #fff; }
+.pet .p-body { position: absolute; left: 30px; top: 16px; width: 74px; height: 46px; border: 2px solid #333; border-radius: 22px; background: #fff; }
+.pet .p-tail { position: absolute; right: -8px; top: 20px; width: 16px; height: 2px; background: #333; }
+.pet.zoom { width: 216px; height: 132px; }
+.pet.zoom .p-head { width: 80px; height: 80px; }
+.pet.zoom .p-ear { left: 8px; top: -16px; width: 28px; height: 32px; }
+.pet.zoom .p-body { left: 60px; top: 32px; width: 148px; height: 92px; border-radius: 44px; }
+.pet.zoom .p-tail { top: 40px; width: 26px; }
+.zone { position: absolute; background: transparent; }
+.zone.show { border: 1px dashed #bbb; }
+.zone.show::after { content: attr(data-name); position: absolute; top: 2px; left: 3px; font-size: 8px; color: #aaa; }
+
+/* 확대 오버레이 */
+.zoomwrap { position: absolute; inset: 0; background: #fff; display: flex; flex-direction: column; }
+.zoomstage { position: relative; flex: 1; border-bottom: 1px solid #ddd; overflow: hidden; }
+.reaction { flex: none; padding: 10px; font-size: 12px; text-align: center; min-height: 42px; display: flex; align-items: center; justify-content: center; border-top: 1px dashed #ccc; }
+
+/* 상황형 제안 — 비모달. 한 번 뜨면 답할 때까지 유지. */
+.suggest { flex: none; border-top: 2px solid #222; background: #fff; padding: 9px 10px; display: flex; flex-direction: column; gap: 7px; }
+.suggest .st { font-weight: 600; font-size: 12px; }
+.suggest .sm { color: #666; font-size: 10px; }
+
+/* 이동 영역 타일 */
+.tilegrid { display: grid; grid-template-columns: repeat(6,1fr); gap: 2px; border: 1px dashed #999; padding: 3px; background-image: repeating-linear-gradient(45deg,#f0f0f0 0 8px,#f8f8f8 8px 16px); touch-action: none; }
+.tile { aspect-ratio: 1; border: 1px solid #ccc; background: transparent; cursor: pointer; position: relative; }
+.tile.on { background: #333; border-color: #333; }
+.tile.on.paw::after { content: "🐾"; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; filter: grayscale(1) brightness(3); }
+.tilelegend { display: flex; gap: 12px; font-size: 10px; color: #666; }
+.tilelegend i { display: inline-block; width: 10px; height: 10px; border: 1px solid #333; margin-right: 4px; vertical-align: -1px; }
+.tilelegend i.on { background: #333; }
+
+/* 보정 미리보기 */
+.tunerow { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.tunebox { border: 1px solid #999; padding: 6px; text-align: center; }
+.tunebox .cap { font-size: 10px; color: #777; margin-bottom: 4px; }
+.tunepv { height: 66px; display: flex; align-items: center; justify-content: center; }
+.tuneshape { border: 2px solid #333; border-radius: 20px; transition: none; }
+
+/* 첫 만남 */
+.meet { position: relative; flex: 1; border: 1px dashed #999; background-image: repeating-linear-gradient(45deg,#f0f0f0 0 8px,#f8f8f8 8px 16px); }
+.meetline { position: absolute; bottom: 54px; left: 0; right: 0; text-align: center; font-size: 15px; font-weight: 600; opacity: 0; }
+.meetline.show { opacity: 1; }
+
+/* ---------- 진행자 전용 (참가자 모드에서 전부 숨김) ---------- */
+#facil { display: none; width: 300px; flex: none; background: #fff; border: 2px solid #222; padding: 12px; max-height: calc(100vh - 36px); overflow-y: auto; }
+body.facil #facil { display: block; }
+#facil h2 { font-size: 12px; border-bottom: 1px solid #999; padding-bottom: 4px; margin-bottom: 8px; }
+#facil h3 { font-size: 11px; margin: 12px 0 5px; color: #555; }
+#facil .fbtn { display: block; width: 100%; text-align: left; border: 1px solid #999; background: #fff; font: inherit; font-size: 11px; padding: 4px 7px; margin-bottom: 3px; cursor: pointer; }
+#facil .fbtn.on { background: #222; color: #fff; border-color: #222; }
+#facil .fgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; }
+#facil .note { border: 1px dashed #999; background: #fafafa; padding: 6px 8px; font-size: 10px; color: #555; line-height: 1.45; margin-bottom: 5px; }
+#facil .note b { color: #222; }
+#facil .tag { display: inline-block; font-size: 9px; border: 1px solid #888; color: #555; padding: 0 4px; margin: 0 3px 3px 0; }
+#facil .mode { border: 2px solid #222; padding: 6px; font-size: 11px; text-align: center; margin-bottom: 10px; font-weight: 600; }
+
+
+/* ================= 통합 실험: 상점 · 하트 · 배치 HUD ================= */
+.hpill { border: 1px solid #333; background: #fff; padding: 1px 7px; font-size: 11px; }
+
+/* Home 위의 최소 HUD — 재화 표시(좌상단) + 생활 상태(우상단) + 진입점 하나 */
+.hudheart {
+  position: absolute; top: 8px; left: 8px; z-index: 4;
+  border: 1px solid #333; background: #fff; color: #222;
+  padding: 5px 10px; font-size: 12px; cursor: pointer;
+  touch-action: manipulation; user-select: none; min-height: 30px;
+  display: flex; align-items: center;
+}
+
+/* 생활 상태 게이지 — 보리보다 시각적으로 뒤에 있어야 한다.
+   결핍 경고가 아니라 '무엇을 더 해줄 수 있는가'를 읽는 장치라서
+   붉은색·느낌표·깜박임을 쓰지 않는다. 낮은 값도 나쁜 상태가 아니다. */
+.hudgauge {
+  position: absolute; top: 8px; right: 8px; z-index: 3;
+  border: 1px solid #bbb; background: rgba(255,255,255,.92); color: #555;
+  padding: 4px 7px; font-size: 10px; line-height: 1.5;
+  pointer-events: none; user-select: none;
+}
+.hudgauge .grow { display: flex; gap: 6px; justify-content: space-between; }
+.hudgauge .gl { color: #666; }
+.hudgauge .gb { letter-spacing: 1px; color: #333; }
+.room.zoomed .hudgauge { display: none; }   /* 확대(쓰다듬기) 중에는 방 HUD를 걷는다 */
+
+/* 확대 중의 하트 잔액 — 첫 하트가 오르는 것이 보여야 하므로 숨기지 않는다.
+   다만 (1) 입력 대상에서 완전히 빠지고 (2) 닫기(✕)와 물리적으로 떨어져 있어야 한다.
+   ✕ 는 확대 오버레이 좌상단 고정이라, 확대 중에는 잔액을 오른쪽으로 비킨다.
+   위치만으로 막지 않는다 — pointer-events 로 히트테스트에서 빼고, JS 가드도 따로 있다. */
+.room.zoomed .hudheart {
+  left: auto; right: 8px;
+  pointer-events: none;
+  border-color: #bbb; color: #555;
+}
+
+/* 확대 닫기 버튼은 모바일 최소 탭 타깃(44px)을 만족해야 한다.
+   .navbar .back 는 다른 화면과 공유하는 클래스라 전역으로 바꾸지 않고 확대 안에서만 키운다. */
+.zoomwrap .navbar { padding: 4px 6px; }
+.zoomwrap .navbar .back {
+  width: 44px; height: 44px; font-size: 15px;
+  touch-action: manipulation; user-select: none;
+}
+
+/* 오늘의 방문 — 카운트다운·경고·연속 끊김 문구 없이 사실만.
+   하단은 탭 힌트(.hintbar)의 자리라서 비워 둔다. 발견 단서를 가리면 안 된다. */
+.visitcard {
+  position: absolute; left: 10px; right: 10px; top: 68px; z-index: 6;
+  border: 1px solid #333; background: #fff; padding: 10px 12px;
+  display: flex; align-items: center; gap: 10px;
+}
+.room.zoomed .visitcard { display: none !important; }
+.visitcard .vt { font-size: 12px; color: #222; flex: 1; }
+.visitcard .vh { font-size: 12px; font-weight: 700; }
+.visitcard .vok {
+  border: 1px solid #333; padding: 6px 12px; font-size: 11px; cursor: pointer;
+  touch-action: manipulation; user-select: none; min-height: 30px;
+  display: flex; align-items: center;
+}
+.hudedit {
+  position: absolute; bottom: 8px; left: 8px; z-index: 4;
+  border: 1px solid #666; background: #fff; color: #444;
+  padding: 6px 10px; font-size: 11px; cursor: pointer;
+  touch-action: manipulation; user-select: none; min-height: 30px;
+  display: flex; align-items: center;
+}
+.hudedit.on { background: #222; color: #fff; border-color: #222; }
+
+/* 상점 */
+.shoptabs { flex: none; display: flex; border-bottom: 1px solid #333; }
+.shoptabs button {
+  flex: 1; font: inherit; font-size: 12px; padding: 9px 0;
+  border: none; border-right: 1px solid #ddd; background: #fff; color: #555;
+  cursor: pointer; touch-action: manipulation;
+}
+.shoptabs button:last-child { border-right: none; }
+.shoptabs button.on { background: #222; color: #fff; font-weight: 600; }
+
+.shopcard {
+  border: 1px solid #999; padding: 9px 10px; display: flex; align-items: center; gap: 8px;
+}
+.shopcard .nm { font-size: 12px; }
+.shopcard .pr { font-size: 11px; color: #666; margin-left: auto; }
+.shopcard .act {
+  border: 1px solid #333; background: #fff; font-size: 11px; padding: 7px 10px;
+  min-height: 34px; min-width: 58px; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; touch-action: manipulation; user-select: none;
+}
+.shopcard .act.buy { background: #222; color: #fff; }
+.shopcard .act.off { border-color: #ccc; color: #bbb; cursor: not-allowed; }
+.shopcard.owned { background: #fafafa; }
+.shopgroup { font-size: 10px; color: #777; margin: 6px 0 2px; }
+
+/* 방에 놓인 상점 오브젝트 */
+.obj.placed { background: #fff; }
+.obj.editable { border-style: dashed; }
+/* 착용 중인 옷 — 저충실도 표시 */
+.wear {
+  position: absolute; top: -14px; left: 34px; z-index: 2;
+  border: 1px solid #333; background: #fff; font-size: 9px; padding: 0 4px;
+  pointer-events: none; white-space: nowrap;
+}

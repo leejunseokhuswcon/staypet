@@ -1,0 +1,2195 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>StayPet Low-fi</title>
+<link rel="stylesheet" href="styles.css">
+
+<!-- 진행자 모드 진입: 키보드 D 또는 좌상단 모서리 3회 클릭. 참가자에게 보이지 않음. -->
+<div id="hot" title=""></div>
+
+<div id="stage">
+<div class="frame">
+  <div class="statusbar"><span id="clock">9:41</span><span>▮▮▮</span></div>
+
+  <!-- ===== 로그인 ===== -->
+  <section class="scr on" data-scr="login">
+    <div class="body-area nopad" style="display:flex;flex-direction:column">
+      <div class="ph grow" style="border:none;flex-direction:column;gap:14px">
+        <div>배경 이미지 / 영상<br>풀숲에서 뛰노는 강아지</div>
+        <div style="border:1px solid #666;background:#fff;padding:10px 18px;font-size:14px;color:#222">StayPet 로고</div>
+      </div>
+    </div>
+    <div class="foot">
+      <div class="btn primary" data-go="basic">로그인하기</div>
+      <div class="btn" data-go="basic">Kakao로 시작하기</div>
+      <div class="btn" data-go="basic">Google로 시작하기</div>
+    </div>
+  </section>
+
+  <section class="scr" data-scr="login-fail">
+    <div class="body-area nopad" style="display:flex;flex-direction:column">
+      <div class="ph grow" style="border:none;flex-direction:column;gap:14px">
+        <div>배경 이미지 / 영상</div>
+        <div style="border:1px solid #666;background:#fff;padding:10px 18px;font-size:14px;color:#222">StayPet 로고</div>
+      </div>
+    </div>
+    <div class="foot">
+      <div class="msg">연결이 끊겨 로그인하지 못했어요.<div class="sub">다시 시도하거나 다른 방법을 선택할 수 있어요.</div></div>
+      <div class="btn primary" data-go="basic">Kakao로 다시 시도</div>
+      <div class="btn" data-go="login">다른 방법으로 로그인</div>
+    </div>
+  </section>
+
+  <!-- ===== 기본 정보 ===== -->
+  <section class="scr" data-scr="basic">
+    <div class="navbar"><div class="back" data-go="login">←</div>반려동물 기본 정보</div>
+    <div class="body-area">
+      <div class="label">종 · 먼저 정해요</div>
+      <div class="chiprow" id="species"><div class="chip" data-v="강아지">강아지</div><div class="chip" data-v="고양이">고양이</div></div>
+      <div class="divider"></div>
+      <div class="label">이름</div>
+      <input class="field" id="petname" placeholder="이름을 입력하세요" autocomplete="off">
+      <div class="divider"></div>
+      <div class="label">성별</div>
+      <div class="chiprow" id="gender"><div class="chip" data-v="남아">남아</div><div class="chip" data-v="여아">여아</div></div>
+    </div>
+    <div class="foot"><div class="btn disabled" id="basicNext">다음</div></div>
+  </section>
+
+  <section class="scr" data-scr="basic-edit">
+    <div class="navbar"><div class="back" data-go="candidates">←</div>기본 정보 수정</div>
+    <div class="body-area">
+      <div class="label">종</div>
+      <div class="chiprow"><div class="chip">강아지</div><div class="chip on">고양이</div></div>
+      <div class="msg">종을 바꾸면 새 후보가 필요할 수 있어요.<div class="sub">지금 후보는 새 후보가 준비될 때까지 그대로 있어요.</div></div>
+    </div>
+    <div class="foot"><div class="btnrow"><div class="btn" data-go="candidates">취소</div><div class="btn primary" data-go="candidates">확인</div></div></div>
+  </section>
+
+  <!-- ===== 사진 자료 ===== -->
+  <section class="scr" data-scr="photo">
+    <div class="navbar"><div class="back" data-go="basic">←</div><span id="photoTitle">사진</span></div>
+    <div class="body-area">
+      <div id="photoEmpty"><div class="ph h170">사진이 아직 없어요</div></div>
+      <div id="photoFilled" style="display:none">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div><div class="ph h90">사진 1</div><div class="small" style="text-align:center">업로드 완료</div></div>
+          <div><div class="ph h90">사진 2</div><div class="small" style="text-align:center">업로드 완료</div></div>
+        </div>
+        <div class="msg" style="margin-top:10px">이 사진을 참고할 수 있어요.<div class="sub">반려동물이 보이고, 크기도 충분해요.</div></div>
+      </div>
+      <div class="btn" id="addPhoto">사진 추가</div>
+      <div id="videoRow" class="small" style="display:none"></div>
+      <div class="btn small" id="addVideo">동영상 추가 (선택)</div>
+    </div>
+    <div class="foot"><div class="btn disabled" id="photoNext">이 사진으로 계속</div></div>
+  </section>
+
+  <section class="scr" data-scr="photo-issue">
+    <div class="navbar"><div class="back" data-go="basic">←</div>사진</div>
+    <div class="body-area">
+      <div class="ph h120" id="issuePh">사진 1</div>
+      <div class="msg" id="issueMsg">사진 속 아이가 조금 작게 나왔어요.<div class="sub">다른 사진을 더하면 더 비슷해질 수 있어요.</div></div>
+      <div class="btn small" data-go="photo">다른 사진 추가</div>
+      <div class="btn small" id="issueReplace">이 사진 교체</div>
+      <div class="btn small" id="issueLater">나중에 계속</div>
+    </div>
+    <div class="foot"><div class="btn" data-go="q1">이대로 계속</div></div>
+  </section>
+
+  <section class="scr" data-scr="photo-fail">
+    <div class="navbar"><div class="back" data-go="basic">←</div>사진</div>
+    <div class="body-area">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div><div class="ph h90">사진 1</div><div class="small" style="text-align:center">업로드 완료</div></div>
+        <div id="failSlot"><div class="ph h90" style="border-style:solid;border-color:#333">사진 2</div><div class="small" style="text-align:center">업로드 실패</div></div>
+      </div>
+      <div class="msg" id="failMsg">사진 2를 올리지 못했어요. 연결을 확인해 주세요.</div>
+      <div class="btnrow" id="failActions"><div class="btn small" id="failRetry">사진 2 다시 시도</div><div class="btn small" id="failDelete">사진 2 삭제</div></div>
+    </div>
+    <div class="foot"><div class="btn primary" data-go="q1">이 사진으로 계속</div></div>
+  </section>
+
+  <!-- ===== Q1 ===== -->
+  <section class="scr" data-scr="q1">
+    <div class="navbar"><div class="back" data-go="photo">←</div><span id="q1Title">보리에 대해</span></div>
+    <div class="body-area">
+      <h3 class="title" id="q1Head">보리가 쓰다듬을 때<br>좋아했던 부위는?</h3>
+      <p class="small">여러 개 고를 수 있어요.</p>
+      <div class="chiprow col" id="q1zones">
+        <div class="chip wide" data-v="머리">머리</div>
+        <div class="chip wide" data-v="배">배</div>
+        <div class="chip wide" data-v="엉덩이">엉덩이</div>
+        <div class="chip wide" data-v="등">등</div>
+      </div>
+    </div>
+    <div class="foot"><div class="btn disabled" id="q1Next">확인</div></div>
+  </section>
+
+  <!-- ===== 생성 대기 ===== -->
+  <section class="scr" data-scr="gen-wait">
+    <div class="navbar plain"><div class="back" data-go="home-park" title="나가기">←</div><div class="right" id="genTitle">보리를 만드는 중</div></div>
+    <div class="body-area center">
+      <div class="ph h120" style="width:100%">캐릭터 생성 중</div>
+      <div class="steps">
+        <div class="s done">✓ 사진 확인</div>
+        <div class="s now">· 특징 준비</div>
+        <div class="s">· 후보 생성</div>
+      </div>
+      <p class="body" style="margin-top:6px">기다리지 않아도 괜찮아요.<br>앱을 닫아도 이어서 만들어요.</p>
+    </div>
+  </section>
+
+  <section class="scr" data-scr="gen-return">
+    <div class="navbar plain"><div class="back" data-go="gen-wait">←</div><div class="right">다시 들어옴</div></div>
+    <div class="body-area center">
+      <div class="ph h120" style="width:100%">캐릭터 생성 중</div>
+      <div class="steps">
+        <div class="s done">✓ 사진 확인</div>
+        <div class="s done">✓ 특징 준비</div>
+        <div class="s now">· 후보 생성</div>
+      </div>
+      <p class="body">아직 만들고 있어요.<br>사진과 답변은 그대로 있어요.</p>
+    </div>
+  </section>
+
+  <section class="scr" data-scr="gen-fail">
+    <div class="navbar plain"><div class="right">다시 들어옴</div></div>
+    <div class="body-area center">
+      <div class="ph h120" style="width:100%">만들지 못했어요</div>
+      <div class="msg" style="width:100%;text-align:left">만드는 중에 문제가 생겼어요.<div class="sub">사진과 답변은 그대로 있어요. 다시 시도할 수 있어요.</div></div>
+    </div>
+    <div class="foot"><div class="btn primary" data-go="candidates">다시 시도</div><div class="btn small" data-go="photo">사진 확인하기</div></div>
+  </section>
+
+  <!-- ===== 후보 ===== -->
+  <section class="scr" data-scr="candidates">
+    <div class="navbar"><div class="back" data-go="photo">←</div>어떤 모습이 가까운가요</div>
+
+    <div class="body-area" id="candMain">
+      <div class="cards" id="cardSet">
+        <div class="card" data-c="1"><div class="cph">후보 1</div><div class="cn">후보 1</div></div>
+        <div class="card" data-c="2"><div class="cph">후보 2</div><div class="cn">후보 2</div></div>
+        <div class="card" data-c="3"><div class="cph">후보 3</div><div class="cn">후보 3</div></div>
+      </div>
+      <div class="btn small" id="showOrigin">원본 사진 보기</div>
+      <div id="originBox" style="display:none"><div class="ph h90">원본 사진</div></div>
+      <div class="btn small" id="toTune">조금 다듬기</div>
+    </div>
+
+    <!-- 다시 준비하기 패널 -->
+    <div class="body-area" id="candRegen" style="display:none">
+      <p class="body">지금 후보는 그대로 두고<br>다시 준비할 수 있어요.</p>
+      <div class="list">
+        <div class="row" data-go="photo">사진을 더하거나 바꾸기<div class="r">→</div></div>
+        <div class="row" data-go="basic-edit">기본 정보 확인<div class="r">→</div></div>
+        <div class="row" id="regenSame">같은 입력으로 새 후보 받기<div class="r">→</div></div>
+      </div>
+      <div class="msg">새 후보가 준비될 때까지 지금 후보는 그대로 있어요.</div>
+      <div class="btn small" id="regenBack">돌아가기</div>
+    </div>
+
+    <!-- 지금은 그만 보기 -->
+    <div class="body-area center" id="candHidden" style="display:none">
+      <div class="ph h120" style="width:100%">결과를 숨긴 상태</div>
+      <p class="body">여기까지 저장해 뒀어요.<br>언제든 다시 이어서 볼 수 있어요.</p>
+    </div>
+
+    <!-- 재진입: 기존 후보를 자동으로 크게 보여주지 않는다 -->
+    <div class="body-area center" id="candReenter" style="display:none">
+      <p class="body">저장해 둔 결과가 있어요.<br>지금 이어서 볼까요?</p>
+    </div>
+
+    <div class="foot" id="candFootMain">
+      <div class="btn disabled" id="candNext">이 모습으로 계속</div>
+      <div class="btnrow">
+        <div class="btn small" id="toRegen">다시 준비하기</div>
+        <div class="btn small" id="toHide">지금은 그만 보기</div>
+      </div>
+    </div>
+    <div class="foot" id="candFootHidden" style="display:none">
+      <div class="btn" id="reopenNow">계속 보기</div>
+      <div class="btn small" id="leaveApp">나가기</div>
+    </div>
+    <div class="foot" id="candFootReenter" style="display:none">
+      <div class="btn primary" id="reenterYes">이어서 보기</div>
+      <div class="btn small" id="reenterNo">나중에 보기</div>
+    </div>
+  </section>
+
+  <!-- ===== 보정 ===== -->
+  <section class="scr" data-scr="tune">
+    <div class="navbar"><div class="back" data-go="candidates">←</div>조금 다듬기</div>
+    <div class="body-area">
+      <div class="tunerow">
+        <div class="tunebox"><div class="cap">처음 후보</div><div class="tunepv"><div class="tuneshape" id="pvBase"></div></div></div>
+        <div class="tunebox"><div class="cap">지금</div><div class="tunepv"><div class="tuneshape" id="pvNow"></div></div></div>
+      </div>
+      <div id="tuneErr"></div>
+      <div class="label">형태</div>
+      <div class="chiprow" data-attr="shape"><div class="chip" data-v="마름">마름</div><div class="chip on" data-v="보통">보통</div><div class="chip" data-v="통통">통통</div></div>
+      <div class="label">색 · 무늬</div>
+      <div class="chiprow" data-attr="tone"><div class="chip on" data-v="밝음">밝음</div><div class="chip" data-v="중간">중간</div><div class="chip" data-v="어두움">어두움</div></div>
+      <div class="divider"></div>
+      <div class="btnrow">
+        <div class="btn small" id="undoTune">직전 변경 되돌리기</div>
+        <div class="btn small" id="resetTune">처음 후보로</div>
+      </div>
+      <div class="small" id="tuneLog">아직 바꾼 것이 없어요.</div>
+      <div class="ph h70">귀 · 털 · 눈 (이번 검증 범위 아님)</div>
+    </div>
+    <div class="foot"><div class="btn primary" data-go="space">이 모습으로 계속</div></div>
+  </section>
+
+  <!-- ===== 공간 사진 ===== -->
+  <section class="scr" data-scr="space">
+    <div class="navbar"><div class="back" data-go="candidates">←</div>보리가 지낼 공간</div>
+    <div class="body-area">
+      <div class="ph h170" id="spacePh">공간 사진이 아직 없어요</div>
+      <div class="btn" id="pickSpace">사진 선택</div>
+      <div class="small" id="spaceMsg"></div>
+    </div>
+    <div class="foot"><div class="btn disabled" id="spaceNext">다음</div></div>
+  </section>
+
+  <!-- ===== 이동 영역 ===== -->
+  <section class="scr" data-scr="area">
+    <div class="navbar"><div class="back" data-go="space">←</div>다닐 수 있는 곳</div>
+    <div class="body-area">
+      <div class="msg">보리가 다녀도 되는 바닥을 골라 주세요.<div class="sub">정확하지 않아도 괜찮아요.</div></div>
+      <div class="tilegrid" id="tiles"></div>
+      <div class="tilelegend"><span><i class="on"></i>다닐 수 있음</span><span><i></i>다닐 수 없음</span></div>
+      <div id="areaErr"></div>
+      <div class="btnrow">
+        <div class="btn small" id="undoArea">실행 취소</div>
+        <div class="btn small" id="resetArea">전체 초기화</div>
+      </div>
+    </div>
+    <div class="foot"><div class="btn primary" id="areaDone">완료</div></div>
+  </section>
+
+  <!-- ===== 첫 만남 ===== -->
+  <section class="scr" data-scr="meet">
+    <div class="body-area nopad">
+      <div class="meet" id="meetStage">
+        <div class="roomlabel">실제 공간 사진</div>
+        <div class="meetline" id="meetLine">보리가 우리 집으로<br>찾아왔어요.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="scr" data-scr="meet-resume">
+    <div class="navbar plain"><div class="right">전화 받고 돌아옴</div></div>
+    <div class="body-area center">
+      <div class="ph h170" style="width:100%">첫 만남 장면</div>
+      <p class="body">보리를 만나는 중이었어요.<br>이어서 볼게요.</p>
+    </div>
+    <div class="foot"><div class="btn primary" id="meetResume">이어서 보기</div></div>
+  </section>
+
+  <!-- ===== HOME (라이브) ===== -->
+  <section class="scr" data-scr="home">
+    <div class="body-area nopad">
+      <div class="room" id="room">
+        <div class="roomlabel">실제 공간 사진 = Home 배경</div>
+        <div class="hudheart" id="hudHeart">♥ 0</div>
+        <div class="hudgauge" id="hudGauge"></div>
+        <div class="hudedit" id="hudEdit" style="display:none">편집</div>
+        <div class="visitcard" id="visitCard" style="display:none">
+          <div class="vt" id="visitStreak"></div>
+          <div class="vh" id="visitHeart"></div>
+          <div class="vok" id="visitOk">확인</div>
+        </div>
+      </div>
+    </div>
+    <div class="suggest" id="sugBox" style="display:none">
+      <div class="st" id="sugTitle"></div>
+      <div class="chiprow" id="sugOpts"></div>
+      <div class="sm" id="sugSub"></div>
+    </div>
+  </section>
+
+  <!-- 대기 중 나가서 머무는 임시 위치 -->
+  <section class="scr" data-scr="home-park">
+    <div class="body-area center">
+      <p class="body">앱 밖으로 나온 상태예요.</p>
+      <div class="small">보리는 계속 만들어지고 있어요.</div>
+    </div>
+    <div class="foot"><div class="btn primary" data-go="gen-return">앱으로 돌아가기</div></div>
+  </section>
+
+  <!-- ===== 개인화 경로 ===== -->
+  <section class="scr" data-scr="path">
+    <div class="navbar"><div class="back" data-go="home">←</div>보리에 대해 더 알려주기</div>
+    <div class="body-area">
+      <p class="small">답하지 않아도 괜찮아요. 언제든 이어서 할 수 있어요.</p>
+      <div class="list" id="pathList"></div>
+    </div>
+  </section>
+
+  <!-- ===== 상점 (통합 실험) ===== -->
+  <section class="scr" data-scr="shop">
+    <div class="navbar"><div class="back" id="shopBack">←</div>상점
+      <div class="right"><span class="hpill" id="shopHearts">♥ 0</span></div></div>
+    <div class="shoptabs" id="shopTabs"></div>
+    <div class="body-area" id="shopList"></div>
+  </section>
+
+  <section class="scr" data-scr="q-detail">
+    <div class="navbar"><div class="back" data-go="path">←</div>보리에 대해 더 알려주기</div>
+    <div class="body-area">
+      <h3 class="title" id="qdHead"></h3>
+      <div class="chiprow col" id="qdOpts"></div>
+      <div id="qdDefer"></div>
+    </div>
+  </section>
+
+</div>
+</div>
+
+<!-- ===== 진행자 패널 (참가자 모드에서 완전히 숨김) ===== -->
+<aside id="facil">
+  <div class="mode">진행자 모드 · D 키로 전환</div>
+
+  <h2>시나리오</h2>
+  <button class="fbtn" data-sc="main">주 경로 (로그인 → 첫 교감)</button>
+  <button class="fbtn" data-sc="person">점진적 개인화</button>
+  <button class="fbtn" data-sc="object">오브젝트 배치</button>
+  <button class="fbtn" data-sc="recover">복구 · 예외</button>
+  <button class="fbtn" data-sc="discover">발견성</button>
+
+  <h3>화면 직접 이동</h3>
+  <div class="fgrid" id="scrJump"></div>
+
+  <h3>Home 상황 발생</h3>
+  <button class="fbtn" data-ev="move">이동 장면 → Q2 활동량 제안</button>
+  <button class="fbtn" data-ev="meal">식사 기회 → 밥그릇 제안</button>
+  <button class="fbtn" data-ev="sleep">수면 → 잠자리 제안</button>
+  <button class="fbtn" data-ev="play">놀이 행동 → 장난감 제안</button>
+  <button class="fbtn" data-ev="poop">배변 발생 (청소 후 Q5)</button>
+  <button class="fbtn" data-ev="bubble">말풍선 표시</button>
+  <button class="fbtn" data-ev="reset">Home 초기화</button>
+
+  <h3>생활 주기 조작 (진행자 전용)</h3>
+  <button class="fbtn" data-lev="tired">피로도 +1</button>
+  <button class="fbtn" data-lev="sleepy">즉시 졸리게 (피로도 3)</button>
+  <button class="fbtn" data-lev="wake">잠 즉시 완료 (피로도 0)</button>
+  <button class="fbtn" data-lev="meal">식사 맥락 즉시 가능</button>
+  <button class="fbtn" data-lev="bowel">배변 즉시 가능</button>
+  <button class="fbtn" data-lev="cycle">주기 전체 앞당기기</button>
+
+  <h3>연속 방문 시뮬레이션 (진행자 전용)</h3>
+  <button class="fbtn" data-vev="next">다음 날 방문 (연속 +1)</button>
+  <button class="fbtn" data-vev="skip">이틀 뒤 방문 (연속 끊김)</button>
+  <button class="fbtn" data-vev="d6">연속 6일차부터</button>
+  <button class="fbtn" data-vev="d13">연속 13일차부터</button>
+  <button class="fbtn" data-vev="d26">연속 26일차부터</button>
+  <button class="fbtn" data-vev="d31">연속 31일차부터</button>
+  <button class="fbtn" data-vev="month">다음 달 1일로 (연속만 초기화)</button>
+
+  <h3>생성 제어</h3>
+  <button class="fbtn" data-ev="gensuccess">생성 성공 완료 → 후보로 자동 전환</button>
+  <button class="fbtn" data-ev="genfail">생성 실패 상태로 복귀</button>
+
+  <h3>기타 조작</h3>
+  <button class="fbtn" data-ev="failnext">다음 보정 변경을 실패시키기</button>
+  <button class="fbtn" data-ev="meetdone">첫 만남 즉시 종료</button>
+
+  <h3>현재 화면 메모</h3>
+  <div class="note" id="facilNote">—</div>
+  <div id="facilTags"></div>
+
+  <h3>Low-fi 임시 파라미터</h3>
+  <div class="note"><b>최소 유효 타일 = 6칸</b> — <b>Low-fi 테스트용 임시 파라미터</b>다. StayPet의 확정 제품 정책이 아니며 UX_FINAL의 제품 규칙으로 승격하지 않는다. 확정된 것은 "빈 영역·지나치게 작은 영역의 완료를 막는다"는 규칙뿐이다.</div>
+</aside>
+
+<script>
+(function () {
+  // ===== Low-fi 테스트용 임시 파라미터 (제품 정책 아님) =====
+  var MIN_TILES = 6;   // 최소 유효 타일 수 — 임시값
+  var RUB_DIST  = 26;  // 쓰다듬기 판정: 실제 좌표 이동 거리(px) — 임시값
+                       //   이것이 유일한 쓰다듬기 조건이다.
+                       //   짧은 탭·반복 탭·이동 없는 길게 누르기는 하트를 만들지 않는다.
+                       //   접근성 대체 입력은 이번 Low-fi 가설(직접 문지르기 이해) 밖이라 넣지 않는다.
+  // ---- 참가자 #2 실험용 생활 파라미터 (전부 임시값, 제품 정책 아님) ----
+  // 넓은 바닥을 시뮬레이션한다. 실제 방 인식(세그멘테이션)이 아니라 수동 정의 영역이다.
+  var SPOTS = [
+    { x: 16,  y: 210 }, { x: 190, y: 200 }, { x: 104, y: 280 }, { x: 20,  y: 370 },
+    { x: 196, y: 355 }, { x: 112, y: 450 }, { x: 34,  y: 500 }, { x: 180, y: 490 }
+  ];
+  var FLOOR_TOP = 0.28;   // 이 비율 아래가 사용 가능한 바닥 (이전 0.45 → 훨씬 넓게)
+  var DWELL_MIN = 2600, DWELL_MAX = 5200;  // 목적지에서 머무는 시간(가변)
+  var TAP_HINT_AFTER_MOVES = 1;            // 자율 이동 N회를 마친 뒤에 탭 힌트
+  var MEAL_AFTER_MOVES     = 1;            // 첫 하트 뒤 자율 이동 N회를 마친 뒤에 식사 맥락
+  var MEAL_FALLBACK_MS     = 75000;        // 하트가 없어도 이 시간이 지나면 생활 사건은 진행
+
+  // ================= 생활 주기 설정 (한곳에 모은다) =================
+  // 제품 개념과 Low-fi 시간은 다른 것이다. 아래 숫자는 전부 테스트 픽스처다.
+  //
+  //   제품 개념 | 식사는 대략 4~6시간마다 / 배변 빈도는 개인화 응답을 따른다 /
+  //            | 피로는 깨어 있는 동안 누적된다 / 쓰다듬기는 언제나 가능하다
+  //   Low-fi   | 관찰 가능하도록 초 단위로 압축했다. 생물학 모델도 경제 밸런스도 아니다.
+  //
+  // 타이밍 규칙을 파일 곳곳에 흩지 않는다. 바꿀 값은 전부 여기에 있다.
+  var LIFE = {
+    rewardCooldownMs:  45000,            // 하트 보상 반복 방지 (4종 보상 공통, 내부 전용)
+    mealIntervalMs:   [45000,  75000],   // LOW-FI_COMPRESSED_MEAL_INTERVAL (제품: 4~6시간)
+    satietyDecayMs:   [60000,  90000],   // 포만감 -1
+    fatigueGainMs:    [35000,  50000],   // 피로도 +1 (깨어 있을 때만)
+    funDecayMs:       [75000, 120000],   // 즐거움 -1
+    sleepDurationMs:   9000,             // 잠 지속 — 끝나야 피로도가 0이 된다
+    majorEventGapMs:  [8000,   15000],   // 주요 사건 사이의 최소 정적
+    clockMs:           1000,             // 생활 시계 간격 (스케줄러는 이것 하나뿐)
+    // Q5 응답별 배변 간격. 비례만 맞춘 압축값이며 실제 생리 모델이 아니다.
+    bowelByAnswer: {
+      '하루 1회 미만': [150000, 180000],
+      '1회':          [120000, 150000],
+      '2회':          [ 90000, 120000],
+      '3회':          [ 70000, 100000],
+      '4회 이상':     [ 50000,  80000],
+      _default:       [ 90000, 120000]   // Q5 응답 전 — 2회/일 상당의 중립값
+    }
+  };
+  function rnd(r) { return r[0] + Math.random() * (r[1] - r[0]); }
+  function bowelRange() {
+    return LIFE.bowelByAnswer[state.answers.q5] || LIFE.bowelByAnswer._default;
+  }
+
+  // ================= 통합 실험: 하트 경제 · 상점 카탈로그 =================
+  // 아래 가격·보상은 전부 LOW-FI PLACEHOLDER BALANCE 다. 제품 경제가 아니다.
+  var HEART = { pet: 3, feed: 2, clean: 4, play: 3 };   // PLACEHOLDER
+  var FARM_COOLDOWN_MS = LIFE.rewardCooldownMs;   // 같은 행동 반복으로 하트를 무한히 얻지 못하게 (내부 전용, 표시 안 함)
+                                                 // 상호작용이 아니라 '보상'에만 걸린다 — 쓰다듬기 자체는 언제나 된다.
+  // QA 픽스처 전용 잔액. 참가자 경제와 무관하며 ?qa=candidates / ?qa=petting 에서만 쓴다.
+  // 참가자 통합 경로(?qa=integrated)와 정상 경로는 0에서 시작한다.
+  var QA_START_HEARTS = 400;
+
+  // ---- 생활 상태 게이지 (포만감 / 피로도 / 즐거움) ----
+  // '무엇을 더 해줄 수 있는가'를 읽게 하는 장치다. 0 이어도 보리에게 나쁜 일은 생기지 않는다.
+  // 포만감·즐거움은 높을수록 좋고, 피로도는 방향이 반대다(0 = 잘 쉰 상태, 3 = 졸림).
+  // 낮은 피로도를 문제처럼 보이게 하지 않는다. 경고색·위험 아이콘·죄책감 표현을 쓰지 않는다.
+  var GAUGE_MAX = 3;                 // PLACEHOLDER
+  var ALL_FULL_BONUS = 5;            // 이상적인 상태에 막 도달했을 때 1회 보상 — PLACEHOLDER
+  var SHOP_INTRO_BEAT_MS = 700;      // 첫 하트 반응 뒤의 아주 짧은 한 박자 (0.5~1.0s)
+  var SHOP_INTRO_LINE_MS = 900;      // 안내 문구를 보여주는 시간
+
+  // ---- 이번 달 연속 방문 보상 (저충실도 시뮬레이션) ----
+  var VISIT_TIERS = [
+    { upto: 5,  heart: 2 },
+    { upto: 12, heart: 3 },
+    { upto: 25, heart: 4 },
+    { upto: 99, heart: 5 }           // 26일 이후는 전부 5 (31일 달의 31일차 포함)
+  ];
+  function visitHeart(n) {
+    for (var i = 0; i < VISIT_TIERS.length; i++) if (n <= VISIT_TIERS[i].upto) return VISIT_TIERS[i].heart;
+    return 5;
+  }
+
+  // 행동 태그: rest_surface / play_object / approach_object / decorative_only
+  var CATALOG = {
+    furniture: [
+      { id:'f01', name:'작은 방석',        price:8,    tag:'rest_surface' },
+      { id:'f02', name:'낡은 소파',        price:12,   tag:'rest_surface' },
+      { id:'f03', name:'작은 러그',        price:18,   tag:'rest_surface' },
+      { id:'f04', name:'원목 밥그릇 받침',  price:20,   tag:'decorative_only' },
+      { id:'f05', name:'기본 쿠션',        price:25,   tag:'rest_surface' },
+      { id:'f06', name:'벽걸이 액자',      price:30,   tag:'decorative_only' },
+      { id:'f07', name:'원목 의자',        price:45,   tag:'approach_object' },
+      { id:'f08', name:'화분 스탠드',      price:55,   tag:'decorative_only' },
+      { id:'f09', name:'둥근 펫베드',      price:70,   tag:'rest_surface' },
+      { id:'f10', name:'낮은 테이블',      price:85,   tag:'approach_object' },
+      { id:'f11', name:'패브릭 소파',      price:110,  tag:'rest_surface' },
+      { id:'f12', name:'원목 펫베드',      price:130,  tag:'rest_surface' },
+      { id:'f13', name:'원목 협탁',        price:145,  tag:'approach_object' },
+      { id:'f14', name:'큰 러그',          price:160,  tag:'rest_surface' },
+      { id:'f15', name:'빈백',             price:180,  tag:'rest_surface' },
+      { id:'f16', name:'창가 쿠션',        price:195,  tag:'rest_surface' },
+      { id:'f17', name:'모던 펫베드',      price:220,  tag:'rest_surface' },
+      { id:'f18', name:'사이드 테이블',    price:240,  tag:'approach_object' },
+      { id:'f19', name:'1인용 소파',       price:265,  tag:'rest_surface' },
+      { id:'f20', name:'벨벳 소파',        price:300,  tag:'rest_surface' },
+      { id:'f21', name:'원목 선반',        price:330,  tag:'approach_object' },
+      { id:'f22', name:'라탄 바스켓',      price:360,  tag:'rest_surface' },
+      { id:'f23', name:'2인용 소파',       price:390,  tag:'rest_surface' },
+      { id:'f24', name:'북유럽 소파',      price:420,  tag:'rest_surface' },
+      { id:'f25', name:'디자인 체어',      price:480,  tag:'approach_object' },
+      { id:'f26', name:'대형 카펫',        price:510,  tag:'rest_surface' },
+      { id:'f27', name:'프리미엄 펫베드',  price:550,  tag:'rest_surface' },
+      { id:'f28', name:'고급 가죽 소파',   price:700,  tag:'rest_surface' },
+      { id:'f29', name:'디자이너 소파',    price:900,  tag:'rest_surface' },
+      { id:'f30', name:'최상급 소가죽 소파', price:1200, tag:'rest_surface' }
+    ],
+    behavior: [
+      { id:'b01', name:'기지개 켜기',              price:5    },
+      { id:'b02', name:'고개 갸웃하기',            price:8    },
+      { id:'b03', name:'꼬리 흔들기',              price:12   },
+      { id:'b04', name:'몸 털기',                  price:16   },
+      { id:'b05', name:'하품하기',                 price:20   },
+      { id:'b06', name:'빙글 돌기',                price:26   },
+      { id:'b07', name:'바닥 냄새 맡기',           price:30   },
+      { id:'b08', name:'창밖 바라보기',            price:40   },
+      { id:'b09', name:'소파 바라보기',            price:55   },
+      { id:'b10', name:'장난감 바라보기',          price:70   },
+      { id:'b11', name:'사용자 쪽으로 다가오기',   price:90   },
+      { id:'b12', name:'장난감 물기',              price:110  },
+      { id:'b13', name:'새 가구 탐색하기',         price:120  },
+      { id:'b14', name:'쿠션 파고들기',            price:150  },
+      { id:'b15', name:'공 쫓아가기',              price:185  },
+      { id:'b16', name:'옆에서 눕기',              price:220  },
+      { id:'b17', name:'배 보이고 눕기',           price:260  },
+      { id:'b18', name:'좋아하는 장소 찾아가기',   price:300  },
+      { id:'b19', name:'사용자 따라가기',          price:350  },
+      { id:'b20', name:'장난감 가져오기',          price:480  },
+      { id:'b21', name:'장난감 들고 돌아다니기',   price:620  },
+      { id:'b22', name:'사용자의 근처에서 잠들기', price:1000 }
+    ],
+    toy: [
+      { id:'t01', name:'작은 공',           price:6,   tag:'play_object' },
+      { id:'t02', name:'실뭉치',            price:9,   tag:'play_object' },
+      { id:'t03', name:'테니스공',          price:14,  tag:'play_object' },
+      { id:'t04', name:'삑삑이',            price:20,  tag:'play_object' },
+      { id:'t05', name:'로프',              price:28,  tag:'play_object' },
+      { id:'t06', name:'봉제 인형',         price:38,  tag:'play_object' },
+      { id:'t07', name:'뼈다귀 장난감',     price:48,  tag:'play_object' },
+      { id:'t08', name:'소리 나는 인형',    price:60,  tag:'play_object' },
+      { id:'t09', name:'터그 장난감',       price:75,  tag:'play_object' },
+      { id:'t10', name:'노즈워크 매트',     price:95,  tag:'play_object' },
+      { id:'t11', name:'원반',              price:115, tag:'play_object' },
+      { id:'t12', name:'애착 인형',         price:140, tag:'play_object' },
+      { id:'t13', name:'작은 터널',         price:170, tag:'play_object' },
+      { id:'t14', name:'대형 공',           price:200, tag:'play_object' },
+      { id:'t15', name:'움직이는 공',       price:240, tag:'play_object' },
+      { id:'t16', name:'간식 퍼즐',         price:285, tag:'play_object' },
+      { id:'t17', name:'숨기기 장난감',     price:330, tag:'play_object' },
+      { id:'t18', name:'자동 공 발사기',    price:400, tag:'play_object' },
+      { id:'t19', name:'프리미엄 노즈워크', price:460, tag:'play_object' },
+      { id:'t20', name:'인터랙티브 장난감', price:530, tag:'play_object' },
+      { id:'t21', name:'계절 한정 장난감',  price:600, tag:'play_object' }
+    ],
+    clothing: [
+      { id:'c01', name:'기본 스카프',       price:6    },
+      { id:'c02', name:'작은 리본',         price:10   },
+      { id:'c03', name:'나비 넥타이',       price:15   },
+      { id:'c04', name:'체크 스카프',       price:22   },
+      { id:'c05', name:'기본 티셔츠',       price:30   },
+      { id:'c06', name:'생일 모자',         price:38   },
+      { id:'c07', name:'작은 모자',         price:48   },
+      { id:'c08', name:'스트라이프 티셔츠', price:60   },
+      { id:'c09', name:'목도리',            price:75   },
+      { id:'c10', name:'선글라스',          price:90   },
+      { id:'c11', name:'파자마',            price:110  },
+      { id:'c12', name:'후드티',            price:135  },
+      { id:'c13', name:'우비',              price:160  },
+      { id:'c14', name:'니트',              price:190  },
+      { id:'c15', name:'베레모',            price:220  },
+      { id:'c16', name:'데님 조끼',         price:260  },
+      { id:'c17', name:'하와이안 셔츠',     price:300  },
+      { id:'c18', name:'산책 조끼',         price:350  },
+      { id:'c19', name:'겨울 패딩',         price:430  },
+      { id:'c20', name:'한복',              price:600  },
+      { id:'c21', name:'프리미엄 코트',     price:800  }
+    ]
+  };
+  var CAT_LABEL = { furniture:'가구', behavior:'행동', toy:'장난감', clothing:'옷' };
+  var CAT_ORDER = ['furniture','behavior','toy','clothing'];
+  function catalogItem(id) {
+    for (var k = 0; k < CAT_ORDER.length; k++) {
+      var arr = CATALOG[CAT_ORDER[k]];
+      for (var i = 0; i < arr.length; i++) if (arr[i].id === id) return arr[i];
+    }
+    return null;
+  }
+  function catOf(id) {
+    for (var k = 0; k < CAT_ORDER.length; k++) {
+      var arr = CATALOG[CAT_ORDER[k]];
+      for (var i = 0; i < arr.length; i++) if (arr[i].id === id) return CAT_ORDER[k];
+    }
+    return null;
+  }
+
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return [].slice.call((r || document).querySelectorAll(s)); };
+
+  // 지연 콜백 등록기 — 시나리오를 바꿀 때 이전 시나리오의 예약분이 남지 않도록 한다.
+  var timers = [];
+  function later(fn, ms) { var id = setTimeout(fn, ms); timers.push(id); return id; }
+  function clearTimers() { timers.forEach(clearTimeout); timers = []; }
+
+  var state = {
+    name: '보리', species: '', gender: '',
+    favZones: [], answers: {}, activity: 'normal',
+    bowl: null, poop: false, cleaned: false,
+    pos: { x: 110, y: 190 }, step: 14, eating: false,
+    life: 'idle', moves: 0, heartAt: 0, homeAt: 0,
+    tapHinted: false, rubHinted: false, mealDone: false,
+    sugKey: null, invalidTaps: 0, hinted: false, everValid: false,
+    candidate: 0, hiddenOnce: false, failNext: false,
+    tune: { shape: '보통', tone: '밝음' }, tuneHist: [],
+    areaHist: [],
+    // ---- 통합 실험: 하트 경제 · 소유 · 배치 ----
+    hearts: 0,            // 사용 가능한 하트(재화)
+    owned: {},            // id -> true
+    outfit: null,         // 착용 중인 옷 id
+    objects: [],          // 방에 놓인 오브젝트 [{uid,id,name,cat,tag,x,y}]
+    shopIntroDone: false, // 첫 하트 뒤 상점 소개는 1회뿐
+    shopCat: 'furniture',
+    editMode: false,
+    lastAward: {},        // 내부 반복 방지용 (화면에 표시하지 않음)
+    // ---- 생활 상태 게이지 ----
+    //   포만감·즐거움은 높을수록 좋고, 피로도는 0이 가장 편안한 상태다.
+    gauge: { full: 1, tired: 0, fun: 1 },
+    bonusArmed: true,     // 이상적인 상태에 막 도달한 순간에만 1회. 유지 중에는 다시 주지 않는다
+    sleepy: false,        // 피로도 3 — 잠들기 직전의 티
+    due:  { satiety: 0, fatigue: 0, fun: 0, meal: 0, bowel: 0 },   // 절대 시각(생활 시계)
+    want: { sleep: false, poop: false, meal: false },              // 다음 조용한 박자에 꺼낼 사건
+    // ---- 연속 방문 (저충실도 시뮬레이션) ----
+    visit: { y: 0, m: 0, d: 0, streak: 0, lastKey: null, last: null }
+  };
+
+  var NOTES = {
+    'login': ['소개 화면 없이 인증 3종. 어느 하나를 기본 선택으로 두지 않는다.', 'H0'],
+    'login-fail': ['같은 위치에서 재시도. 기존 데이터 삭제 없음.', 'H0'],
+    'basic': ['종이 선행 항목. 종·이름 입력 시 CTA 활성. 실제 조작으로 진행된다.', 'H1'],
+    'basic-edit': ['상위 입력 수정의 영향 범위를 실행 전에 알린다.', '§7.4'],
+    'photo': ['업로드 성공(기술)과 사용 가능(품질)을 구분. 품질 점수 금지.', 'H3'],
+    'photo-issue': ['늦고 비싼 실패를 이르고 값싼 수정으로. 진행을 막지는 않는다.', 'H3'],
+    'photo-fail': ['실패 범위만 재시도. 성공 파일은 유지.', 'H3'],
+    'q1': ['첫 만남 전 문답은 이것 하나뿐. 복수 선택 + 명시적 확인.', 'H1 H2'],
+    'gen-wait': ['진행률 %·남은 시간 없음. 과제 없음. 상단 ←로 나갈 수 있다(강조 CTA 아님).', 'H19'],
+    'gen-return': ['자발적 복귀 시 상태 복원. 재입력 불필요.', 'H19'],
+    'gen-fail': ['실패 복귀 상태. 입력 보존 + 생성만 재시도.', 'H19'],
+    'candidates': ['선택과 확정을 분리. 불만족 복구는 주 경로 하나 + 보조. 원본은 요청 시에만.', 'H4'],
+    'tune': ['대표 속성 2종만 실제 조작. 전/후 비교, undo, 원본 복원, 실패한 변경만 복구.', 'H4'],
+    'space': ['공간 한 장. 분류·다중 방 없음.', '§3.8'],
+    'area': ['타일 토글 · 재탭이 제외 · 지우개 없음 · 미리보기 모드 없음 · 발자국 상시 표시. 최소 면적 미달 시 완료 차단 후 인라인 복구.', 'H5 H6 H7'],
+    'meet': ['오브젝트 없음. CTA 없음. 자동 진행 후 Home으로 연속.', 'H20'],
+    'meet-resume': ['진행 중 중단 → 재개. foreground 완료 판정.', 'H20'],
+    'home': ['라이브 Home. 캐릭터 탭→확대→직접 문지르기, 빈 탭 2회 힌트, 상황형 제안, 오브젝트 배치·급식·청소가 모두 실제로 동작한다. 첫 하트 직후에는 아무 제안도 하지 않는다.', 'H8 H9 H10 H11 H12 H13 H14 H15 H16 H18'],
+    'home-park': ['대기 중 앱 밖으로 나간 상태.', 'H19'],
+    'path': ['미응답 문항이 모인 하나의 경로. 상태 열·진행률·배지 없음.', 'H17'],
+    'q-detail': ['사용자가 스스로 열고 들어온 질문. Q5에는 유예 선택지 유지.', 'H17']
+  };
+
+  var SCEN = {
+    main: ['login','basic','photo','q1','gen-wait','gen-return','candidates','tune','space','area','meet','home'],
+    person: ['home','path','q-detail'],
+    object: ['home'],
+    recover: ['login-fail','photo-issue','photo-fail','gen-fail','candidates','basic-edit','area','meet-resume'],
+    discover: ['home']
+  };
+
+  // ---------- 화면 전환 ----------
+  function go(id) {
+    $$('.scr').forEach(function (s) { s.classList.toggle('on', s.dataset.scr === id); });
+    var n = NOTES[id] || ['—',''];
+    $('#facilNote').textContent = n[0];
+    $('#facilTags').innerHTML = (n[1] || '').split(' ').filter(Boolean)
+      .map(function (t) { return '<span class="tag">' + t + '</span>'; }).join('');
+    if (id === 'meet') runMeet();
+    if (id === 'home') renderHome();
+    if (id === 'path') renderPath();
+    if (id === 'shop') renderShop();
+    if (id === 'candidates') renderCand();
+    if (id === 'tune') renderTune();
+  }
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest('[data-go]');
+    if (t) go(t.dataset.go);
+  });
+
+  // ---------- 참가자 / 진행자 모드 ----------
+  function setFacil(on) { document.body.classList.toggle('facil', on); }
+  document.addEventListener('keydown', function (e) {
+    // 입력 중에는 단축키를 무시한다. 영문 이름 입력이 진행자 패널을 열면 안 된다.
+    if (e.isComposing || e.keyCode === 229) return;
+    var t = e.target;
+    if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' ||
+              t.tagName === 'SELECT' || t.isContentEditable)) return;
+    if (e.key === 'd' || e.key === 'D') setFacil(!document.body.classList.contains('facil'));
+  });
+  var hotN = 0, hotT = 0;
+  $('#hot').addEventListener('click', function () {
+    clearTimeout(hotT); hotN++;
+    if (hotN >= 3) { setFacil(!document.body.classList.contains('facil')); hotN = 0; }
+    hotT = setTimeout(function () { hotN = 0; }, 700);
+  });
+
+  // 진행자: 화면 점프 버튼
+  $('#scrJump').innerHTML = $$('.scr').map(function (s) {
+    return '<button class="fbtn" data-go="' + s.dataset.scr + '">' + s.dataset.scr + '</button>';
+  }).join('');
+  // 시나리오를 바꿀 때는 먼저 참가자 상태를 전부 지우고, 그 다음 그 시나리오의 시작 조건만 세운다.
+  // 이전 시나리오의 잔여 상태·예약 콜백이 다음 시나리오를 오염시키면 안 된다.
+  function resetAllParticipantState() {
+    // 1) 예약된 지연 콜백·타이머
+    clearTimers();
+    clearTimeout(meetT1); clearTimeout(meetT2);
+    clearInterval(idleTimer); idleTimer = null;
+    meetResuming = false;
+    endGhostDrag();
+    placing = null; placeStage = 'idle'; ghostDrag = false;
+
+    // 2) 상태값
+    state.species = ''; state.gender = ''; state.name = '보리';
+    state.favZones = []; state.answers = {};
+    state.activity = 'normal'; state.step = 14; state.pos = { x: 110, y: 190 };
+    state.bowl = null; state.poop = false; state.cleaned = false; state.eating = false;
+    state.sugKey = null;
+    state.invalidTaps = 0; state.hinted = false; state.everValid = false; state.zoomHinted = false;
+    state.life = 'idle'; state.moves = 0; state.heartAt = 0; state.heartMoves = 0; state.homeAt = 0;
+    state.tapHinted = false; state.rubHinted = false;
+    state.mealDone = false; state.mealMoves = 0;
+    state.poopDone = false; state.introMoves = 0;
+    state.editMode = false; state.firstHeartPaid = false; state.lastAward = {};
+    lastSpot = -1;
+    state.candidate = 0; state.hiddenOnce = false; state.failNext = false;
+    state.tune = { shape: '보통', tone: '밝음' }; state.tuneHist = [];
+    state.areaHist = [];
+    state.hearts = 0; state.owned = {}; state.outfit = null; state.objects = [];
+    state.shopIntroDone = false; state.shopCat = 'furniture';
+    state.gauge = { full: 1, tired: 0, fun: 1 }; state.bonusArmed = true;
+    state.sleepy = false;
+    state.due  = { satiety: 0, fatigue: 0, fun: 0, meal: 0, bowel: 0 };
+    state.want = { sleep: false, poop: false, meal: false };
+    stopLifeClock();                       // 시나리오를 바꿀 때 반복 타이머가 남지 않게
+    lastMajorAt = 0; majorGapMs = 0;
+    state.visit = { y: 0, m: 0, d: 0, streak: 0, lastKey: null, last: null };
+    $('#visitCard').style.display = 'none';
+    room.classList.remove('zoomed');
+
+    // 3) 화면에 남아 있는 흔적
+    $('#petname').value = '';
+    $$('#species .chip, #gender .chip, #q1zones .chip').forEach(function (c) { c.classList.remove('on'); });
+    ['#basicNext', '#q1Next', '#photoNext', '#spaceNext'].forEach(function (sel) {
+      $(sel).classList.add('disabled'); $(sel).classList.remove('primary');
+    });
+    $('#photoTitle').textContent = '사진';
+    $('#q1Title').textContent = '보리에 대해';
+    $('#q1Head').innerHTML = '보리가 쓰다듬을 때<br>좋아했던 부위는?';
+    $('#photoEmpty').style.display = ''; $('#photoFilled').style.display = 'none';
+    $('#videoRow').style.display = 'none'; $('#videoRow').textContent = '';
+    $('#addVideo').textContent = '동영상 추가 (선택)';
+    $('#issuePh').textContent = '사진 1';
+    $('#issueMsg').innerHTML = '사진 속 아이가 조금 작게 나왔어요.<div class="sub">다른 사진을 더하면 더 비슷해질 수 있어요.</div>';
+    $('#failSlot').innerHTML = '<div class="ph h90" style="border-style:solid;border-color:#333">사진 2</div>' +
+                               '<div class="small" style="text-align:center">업로드 실패</div>';
+    $('#failMsg').textContent = '사진 2를 올리지 못했어요. 연결을 확인해 주세요.';
+    $('#failActions').style.display = '';
+    $$('#cardSet .card').forEach(function (c, i) {
+      c.classList.remove('sel');
+      c.querySelector('.cph').textContent = '후보 ' + (i + 1);
+      c.querySelector('.cn').textContent = '후보 ' + (i + 1);
+    });
+    $('#candNext').classList.add('disabled'); $('#candNext').classList.remove('primary');
+    $('#originBox').style.display = 'none';
+    $('#tuneErr').innerHTML = '';
+    $('#spacePh').textContent = '공간 사진이 아직 없어요'; $('#spaceMsg').textContent = '';
+    $('#areaErr').innerHTML = '';
+    $$('.tile', grid).forEach(function (t, i) { t.classList.toggle('on', seed.indexOf(i) >= 0); });
+    paws();
+    $('#meetLine').classList.remove('show');
+    $$('.pet', $('#meetStage')).forEach(function (n) { n.remove(); });
+    room.querySelectorAll('.pet,.obj,.bubble,.hintbar,.fx,.zoomwrap,.placebar,.okbtn').forEach(function (n) { n.remove(); });
+    $('#sugBox').style.display = 'none';
+    candView('main');
+    renderTune();
+    syncTuneEntry();
+  }
+
+  // 등록이 끝난 상태에서 시작하는 시나리오용 최소 fixture
+  function fixtureRegistered() {
+    state.species = '강아지'; state.gender = '남아'; state.name = '보리';
+    state.favZones = ['머리', '배'];
+  }
+  var FIXTURE = {
+    main:     function () {},                 // 로그인부터 참가자가 직접 만든다
+    recover:  function () {},                 // 복구 화면은 등록 전 상태에서 확인한다
+    person:   fixtureRegistered,
+    object:   fixtureRegistered,
+    discover: fixtureRegistered
+  };
+  function resetForScenario(sc) {
+    resetAllParticipantState();
+    (FIXTURE[sc] || function () {})();
+    room.dataset.scenario = sc;
+  }
+  $$('#facil [data-sc]').forEach(function (b) {
+    b.onclick = function () { resetForScenario(b.dataset.sc); go(SCEN[b.dataset.sc][0]); };
+  });
+
+  // ---------- 기본 정보 ----------
+  function chipGroup(sel, key, cb) {
+    $(sel).addEventListener('click', function (e) {
+      var c = e.target.closest('.chip'); if (!c) return;
+      $$('.chip', this).forEach(function (x) { x.classList.remove('on'); });
+      c.classList.add('on'); state[key] = c.dataset.v; cb && cb();
+    });
+  }
+  function checkBasic() {
+    // 종·이름·성별 셋 다 있어야 진행 (UX_FINAL §3.2, §11-35)
+    var ok = !!state.species && !!$('#petname').value.trim() && !!state.gender;
+    $('#basicNext').classList.toggle('disabled', !ok);
+    $('#basicNext').classList.toggle('primary', !!ok);
+  }
+  chipGroup('#species', 'species', checkBasic);
+  chipGroup('#gender', 'gender', checkBasic);
+  $('#petname').addEventListener('input', checkBasic);
+  $('#basicNext').onclick = function () {
+    if (this.classList.contains('disabled')) return;
+    state.name = $('#petname').value.trim() || '보리';
+    $('#photoTitle').textContent = state.name + '의 사진';
+    $('#q1Title').textContent = state.name + '에 대해';
+    $('#q1Head').innerHTML = state.name + '가 쓰다듬을 때<br>좋아했던 부위는?';
+    go('photo');
+  };
+
+  // ---------- 사진 ----------
+  $('#addPhoto').onclick = function () {
+    $('#photoEmpty').style.display = 'none';
+    $('#photoFilled').style.display = '';
+    $('#photoNext').classList.remove('disabled');
+    $('#photoNext').classList.add('primary');
+  };
+  $('#photoNext').onclick = function () { if (!this.classList.contains('disabled')) go('q1'); };
+  // 선택 동영상 — 실제 업로드 파이프라인은 만들지 않고 최소 상태 변화만 둔다.
+  $('#addVideo').onclick = function () {
+    var row = $('#videoRow');
+    if (row.style.display === 'none') {
+      row.style.display = ''; row.textContent = '동영상 1 · 업로드 완료 (선택 자료)';
+      this.textContent = '동영상 삭제';
+    } else {
+      row.style.display = 'none'; row.textContent = '';
+      this.textContent = '동영상 추가 (선택)';
+    }
+  };
+  // 복구 화면의 최소 상태 변화 (Scenario 8 을 행동 테스트로 쓰기 위한 최소치)
+  $('#issueReplace').onclick = function () {
+    $('#issuePh').textContent = '사진 1 (교체됨)';
+    $('#issueMsg').innerHTML = '교체한 사진으로 계속할 수 있어요.<div class="sub">아이가 충분히 크게 보여요.</div>';
+  };
+  $('#issueLater').onclick = function () {
+    $('#issueMsg').innerHTML = '여기까지 저장해 뒀어요.<div class="sub">언제든 이어서 할 수 있어요.</div>';
+  };
+  $('#failRetry').onclick = function () {
+    $('#failSlot').innerHTML = '<div class="ph h90">사진 2</div><div class="small" style="text-align:center">업로드 완료</div>';
+    $('#failMsg').textContent = '사진 2를 다시 올렸어요.';
+    $('#failActions').style.display = 'none';
+  };
+  $('#failDelete').onclick = function () {
+    $('#failSlot').innerHTML = '';
+    $('#failMsg').textContent = '사진 2를 뺐어요. 사진 1로 계속할 수 있어요.';
+    $('#failActions').style.display = 'none';
+  };
+
+  // ---------- Q1 (복수 선택) ----------
+  $('#q1zones').addEventListener('click', function (e) {
+    var c = e.target.closest('.chip'); if (!c) return;
+    c.classList.toggle('on');
+    state.favZones = $$('.chip.on', this).map(function (x) { return x.dataset.v; });
+    var ok = state.favZones.length > 0;
+    $('#q1Next').classList.toggle('disabled', !ok);
+    $('#q1Next').classList.toggle('primary', ok);
+  });
+  $('#q1Next').onclick = function () { if (!this.classList.contains('disabled')) go('gen-wait'); };
+
+  // ---------- 후보 ----------
+  function candView(v) {
+    $('#candMain').style.display = v === 'main' ? '' : 'none';
+    $('#candRegen').style.display = v === 'regen' ? '' : 'none';
+    $('#candHidden').style.display = v === 'hidden' ? '' : 'none';
+    $('#candReenter').style.display = v === 'reenter' ? '' : 'none';
+    // 재생성 패널이 열렸을 때는 기본 후보 footer를 감춘다 (선택지 경쟁 방지)
+    $('#candFootMain').style.display = v === 'main' ? '' : 'none';
+    $('#candFootHidden').style.display = v === 'hidden' ? '' : 'none';
+    $('#candFootReenter').style.display = v === 'reenter' ? '' : 'none';
+  }
+  function renderCand() { candView(state.hiddenOnce ? 'reenter' : 'main'); syncTuneEntry(); }
+  $('#cardSet').addEventListener('click', function (e) {
+    var c = e.target.closest('.card'); if (!c) return;
+    $$('.card', this).forEach(function (x) { x.classList.remove('sel'); });
+    c.classList.add('sel'); state.candidate = c.dataset.c;
+    $('#candNext').classList.remove('disabled'); $('#candNext').classList.add('primary');
+    syncTuneEntry();
+  });
+  $('#candNext').onclick = function () { if (!this.classList.contains('disabled')) go('space'); };
+  $('#showOrigin').onclick = function () {
+    var b = $('#originBox'); b.style.display = b.style.display === 'none' ? '' : 'none';
+  };
+  // 보정은 기준 후보가 정해진 뒤에만 의미가 있다.
+  function syncTuneEntry() { $('#toTune').classList.toggle('disabled', !state.candidate); }
+  $('#toTune').onclick = function () { if (state.candidate) go('tune'); };
+  $('#toRegen').onclick = function () { candView('regen'); };
+  $('#regenBack').onclick = function () { candView('main'); };
+  $('#regenSame').onclick = function () {
+    $$('#cardSet .card').forEach(function (c, i) {
+      c.classList.remove('sel');
+      c.querySelector('.cph').textContent = '새 후보 ' + (i + 1);
+      c.querySelector('.cn').textContent = '새 후보 ' + (i + 1);
+    });
+    state.candidate = 0;
+    $('#candNext').classList.add('disabled'); $('#candNext').classList.remove('primary');
+    syncTuneEntry();
+    candView('main');
+  };
+  $('#toHide').onclick = function () { state.hiddenOnce = true; candView('hidden'); };
+  $('#leaveApp').onclick = function () { candView('reenter'); };
+  $('#reopenNow').onclick = function () { state.hiddenOnce = false; candView('main'); };
+  $('#reenterYes').onclick = function () { state.hiddenOnce = false; candView('main'); };
+  $('#reenterNo').onclick = function () { candView('hidden'); };
+
+  // ---------- 보정 ----------
+  var SHAPE = { '마름': 46, '보통': 62, '통통': 80 };
+  var TONE = { '밝음': '#fff', '중간': '#ddd', '어두움': '#aaa' };
+  function paint(el, t) {
+    el.style.width = SHAPE[t.shape] + 'px';
+    el.style.height = '44px';
+    el.style.background = TONE[t.tone];
+  }
+  // 보정 화면은 id가 아니라 data-scr로 식별된다. 셀렉터를 그에 맞춘다.
+  var TUNE_GROUPS = '[data-scr="tune"] .chiprow[data-attr]';
+  var ATTR_LABEL = { shape: '형태', tone: '색 · 무늬' };
+  function renderTune() {
+    paint($('#pvBase'), { shape: '보통', tone: '밝음' });
+    paint($('#pvNow'), state.tune);
+    $$(TUNE_GROUPS).forEach(function (g) {
+      $$('.chip', g).forEach(function (c) {
+        c.classList.toggle('on', state.tune[g.dataset.attr] === c.dataset.v);
+      });
+    });
+    $('#tuneLog').textContent = state.tuneHist.length
+      ? '바꾼 항목 ' + state.tuneHist.length + '개 · 처음 후보와 비교할 수 있어요'
+      : '아직 바꾼 것이 없어요.';
+  }
+  $$(TUNE_GROUPS).forEach(function (g) {
+    g.addEventListener('click', function (e) {
+      var c = e.target.closest('.chip'); if (!c) return;
+      var attr = g.dataset.attr, prev = state.tune[attr];
+      if (state.failNext) {
+        state.failNext = false;
+        $('#tuneErr').innerHTML = '<div class="msg">이 변경을 적용하지 못했어요.' +
+          '<div class="sub">' + (ATTR_LABEL[attr] || attr) + '만 이전 값(' + prev +
+          ')으로 돌아갔어요. 다른 변경은 그대로예요.</div></div>';
+        renderTune();
+        return;
+      }
+      $('#tuneErr').innerHTML = '';
+      state.tuneHist.push({ attr: attr, prev: prev });
+      state.tune[attr] = c.dataset.v;
+      renderTune();
+    });
+  });
+  $('#undoTune').onclick = function () {
+    var last = state.tuneHist.pop(); if (!last) return;
+    state.tune[last.attr] = last.prev; $('#tuneErr').innerHTML = ''; renderTune();
+  };
+  $('#resetTune').onclick = function () {
+    state.tune = { shape: '보통', tone: '밝음' }; state.tuneHist = [];
+    $('#tuneErr').innerHTML = ''; renderTune();
+  };
+
+  // ---------- 공간 사진 ----------
+  $('#pickSpace').onclick = function () {
+    $('#spacePh').textContent = '공간 사진';
+    $('#spaceMsg').textContent = '업로드 완료';
+    $('#spaceNext').classList.remove('disabled'); $('#spaceNext').classList.add('primary');
+  };
+  $('#spaceNext').onclick = function () { if (!this.classList.contains('disabled')) go('area'); };
+
+  // ---------- 이동 영역 ----------
+  var grid = $('#tiles');
+  grid.innerHTML = Array(24).join('.').split('.').map(function () { return '<div class="tile"></div>'; }).join('');
+  var seed = [8, 9, 13, 14, 15, 16, 19, 20, 21, 22];
+  $$('.tile', grid).forEach(function (t, i) { if (seed.indexOf(i) >= 0) t.classList.add('on'); });
+  function paws() {
+    var on = $$('.tile.on', grid);
+    $$('.tile', grid).forEach(function (t) { t.classList.remove('paw'); });
+    on.forEach(function (t, i) { if (i % 3 === 0) t.classList.add('paw'); });
+  }
+  function toggleTile(t, force) {
+    state.areaHist.push({ el: t, was: t.classList.contains('on') });
+    if (force === true) t.classList.add('on'); else t.classList.toggle('on');
+    $('#areaErr').innerHTML = ''; paws();
+  }
+  var drag = false;
+  grid.addEventListener('pointerdown', function (e) {
+    var t = e.target.closest('.tile'); if (!t) return;
+    drag = true; toggleTile(t);
+  });
+  grid.addEventListener('pointerover', function (e) {
+    if (!drag) return; var t = e.target.closest('.tile');
+    if (t && !t.classList.contains('on')) toggleTile(t, true);
+  });
+  document.addEventListener('pointerup', function () { drag = false; });
+  $('#undoArea').onclick = function () {
+    var l = state.areaHist.pop(); if (!l) return;
+    l.el.classList.toggle('on', l.was); $('#areaErr').innerHTML = ''; paws();
+  };
+  $('#resetArea').onclick = function () {
+    $$('.tile', grid).forEach(function (t) { t.classList.remove('on'); });
+    state.areaHist = []; $('#areaErr').innerHTML = ''; paws();
+  };
+  $('#areaDone').onclick = function () {
+    var n = $$('.tile.on', grid).length;
+    if (n < MIN_TILES) {
+      $('#areaErr').innerHTML = '<div class="msg">다닐 곳이 조금 좁아요.' +
+        '<div class="sub">몇 칸 더 골라 주면 ' + state.name + '가 더 편하게 움직여요.</div></div>';
+      return;
+    }
+    go('meet');
+  };
+  paws();
+
+  // ---------- 첫 만남 ----------
+  var meetT1 = null, meetT2 = null, meetResuming = false, meetCanContinue = false;
+  function runMeet() {
+    var st = $('#meetStage');
+    $$('.pet', st).forEach(function (p) { p.remove(); });
+    $('#meetLine').classList.remove('show');
+    var p = makePet(); p.style.left = '110px'; p.style.top = '150px';
+    p.style.pointerEvents = 'none'; st.appendChild(p);
+    clearTimeout(meetT1); clearTimeout(meetT2);
+    // 중단 복귀는 처음부터 재생이 아니라 "진행 중이던 지점에서 재개"다 (UX_FINAL §5.5).
+    var lineAt = meetResuming ? 200 : 1600;
+    var homeAt = meetResuming ? 6000 : 14000;   // 탭이 주 경로, 자동 전환은 막힘 방지용 안전망
+    meetResuming = false;
+    meetCanContinue = false;
+    meetT1 = setTimeout(function () {
+      $('#meetLine').classList.add('show');
+      meetCanContinue = true;        // 문구가 보인 뒤부터 탭으로 넘어갈 수 있다
+    }, lineAt);
+    // 탭하지 않는 참가자도 막히지 않도록 넉넉한 자동 전환을 남긴다.
+    meetT2 = setTimeout(function () { go('home'); }, homeAt);
+  }
+  // 첫 만남 문구를 본 뒤 화면을 탭하면 Home 으로 넘어간다 (참가자 실험 조건).
+  $('[data-scr="meet"]').addEventListener('pointerup', function () {
+    if (!meetCanContinue) return;
+    meetCanContinue = false;
+    clearTimeout(meetT1); clearTimeout(meetT2);
+    go('home');
+  });
+  $('#meetResume').onclick = function () { meetResuming = true; go('meet'); };
+
+  // ---------- 캐릭터 ----------
+  function makePet() {
+    var d = document.createElement('div');
+    d.className = 'pet';
+    d.innerHTML = '<div class="p-ear"></div><div class="p-head"></div><div class="p-body"></div><div class="p-tail"></div>';
+    return d;
+  }
+  function addZones(pet, zoom) {
+    var z = [
+      ['머리', 0, 0, zoom ? 80 : 40, zoom ? 80 : 40],
+      ['등', zoom ? 60 : 30, zoom ? 32 : 16, zoom ? 148 : 74, zoom ? 46 : 23],
+      ['배', zoom ? 60 : 30, zoom ? 78 : 39, zoom ? 110 : 55, zoom ? 46 : 23],
+      ['엉덩이', zoom ? 170 : 85, zoom ? 32 : 16, zoom ? 46 : 23, zoom ? 92 : 46]
+    ];
+    z.forEach(function (a) {
+      var d = document.createElement('div');
+      d.className = 'zone'; d.dataset.name = a[0];
+      d.style.cssText = 'left:' + a[1] + 'px;top:' + a[2] + 'px;width:' + a[3] + 'px;height:' + a[4] + 'px';
+      pet.appendChild(d);
+    });
+  }
+
+  // ---------- HOME ----------
+  var room = $('#room');
+  var idleTimer = null;
+
+  // 보리의 위치를 바꾼다. 요소를 다시 만들지 않아야 CSS 전환이 실제로 보인다.
+  // ms 를 주면 거리에 맞춰 이동 시간이 달라져 '순간이동'이 아니라 '건너감'으로 읽힌다.
+  function movePet(x, y, ms) {
+    state.pos = { x: x, y: y };
+    var p = room.querySelector('.pet');
+    if (!p) return;
+    if (ms) p.style.transitionDuration = (ms / 1000) + 's';
+    p.style.left = x + 'px'; p.style.top = y + 'px';
+  }
+  function petPhase(v) { room.dataset.pet = v; }
+
+  // ---------- 참가자 #2 실험: 최소 자율 생활 루프 ----------
+  // 목적지 이동 → 도착해 머무름 → 다른 목적지 선택. NPC 엔진이 아니라 상태 몇 개다.
+  var lastSpot = -1;
+  var MIN_TRAVEL = 110;   // 이보다 짧게 움직이면 '흔들림'으로 읽힌다 — 임시값
+  function pickSpot() {
+    // 놓인 가구·장난감이 있으면 가끔 그쪽으로 간다 ("사고 놓았더니 생활이 달라졌다")
+    var near = state.objects.filter(function (o) {
+      return o.tag === 'rest_surface' || o.tag === 'approach_object' || o.tag === 'play_object';
+    });
+    if (near.length && Math.random() < 0.45) {
+      var o = near[Math.floor(Math.random() * near.length)];
+      return nearObject(o);
+    }
+    var best = null, bestD = -1;
+    for (var t = 0; t < 12; t++) {
+      var i = Math.floor(Math.random() * SPOTS.length);
+      if (i === lastSpot && SPOTS.length > 1) continue;
+      var s = SPOTS[i];
+      var d = Math.abs(s.x - state.pos.x) + Math.abs(s.y - state.pos.y);
+      if (d >= MIN_TRAVEL) { lastSpot = i; return s; }   // 눈에 띄게 이동하는 곳 우선
+      if (d > bestD) { bestD = d; best = i; }
+    }
+    lastSpot = (best === null ? 0 : best);
+    return SPOTS[lastSpot];
+  }
+  function travelMs(to) {
+    var d = Math.abs(to.x - state.pos.x) + Math.abs(to.y - state.pos.y);
+    return Math.max(900, Math.min(1800, 520 + d * 4));   // 이동이 '건너감'으로 읽힐 만큼
+  }
+  // 졸리면 한 자리에 더 오래 머문다 — '움직임이 줄어든다'를 저충실도로 표현한다.
+  function dwellMs() {
+    var d = DWELL_MIN + Math.random() * (DWELL_MAX - DWELL_MIN);
+    return state.sleepy ? d * 1.6 : d;
+  }
+  function lifeBusy() {
+    return state.life !== 'idle' || !!room.querySelector('.zoomwrap') || placing ||
+           $('.scr.on').dataset.scr !== 'home';
+  }
+
+  function startLife() {
+    if (state.life === 'rest') return;      // 자는 중이면 깨어날 때 스스로 이어받는다
+    clearTimeout(idleTimer);
+    idleTimer = later(lifeTick, dwellMs());
+  }
+  function lifeTick() {
+    if (lifeBusy()) { idleTimer = later(lifeTick, 1200); return; }   // 방해하지 않고 다시 본다
+    var to = pickSpot(), ms = travelMs(to);
+    state.life = 'travel'; petPhase('moving');
+    movePet(to.x, to.y, ms);
+    idleTimer = later(function () {
+      state.life = 'idle'; petPhase('idle');
+      state.moves++;
+      onArrived();
+      // 사건이 시작됐으면(잠·식사·놀이) 그 사건이 루프를 이어받는다.
+      // 여기서 또 예약하면 사슬이 둘로 갈라진다.
+      if (state.life === 'idle') idleTimer = later(lifeTick, dwellMs());
+    }, ms);
+  }
+
+  // ---------- 주요 사건 조정 ----------
+  // 식사 맥락 · 졸림→잠 · 새 배변 · 상황형 제안은 '주요 사건'이다.
+  // 한 번에 하나만 주의를 요구하고, 사건 사이에는 조용한 간격을 둔다.
+  // 참가자에게는 스케줄러가 보이지 않아야 한다 — '보리가 살고 있다'로 읽혀야 한다.
+  var lastMajorAt = 0, majorGapMs = 0;
+  // 사건 사이의 조용한 간격만 본다. 미응답 질문 여부는 여기서 보지 않는다 —
+  // 질문이 떠 있다고 보리의 생리(잠·배변)가 멈추면 생활이 정지해 버린다.
+  // 새 '질문'을 띄우는 경로만 따로 sugKey 를 확인한다.
+  function majorReady() {
+    return Date.now() - lastMajorAt >= majorGapMs;
+  }
+  function claimMajor() { lastMajorAt = Date.now(); majorGapMs = rnd(LIFE.majorEventGapMs); }
+
+  // 도착할 때마다 생활 사건을 확인한다.
+  // 사건은 '보리의 행동이 먼저, 선택적 제안이 뒤'다. 과제 번호도 진행률도 없다.
+  function onArrived() {
+    // 1) 탭 힌트 — 자율 이동을 한 번 보고 난 뒤에만 (첫 세션)
+    if (!state.tapHinted && !state.everValid && state.moves >= TAP_HINT_AFTER_MOVES) showTapHint();
+
+    // 상점 소개는 Home 에서 하지 않는다. 첫 하트가 나온 확대 맥락에서 이어진다(shopIntroFromZoom).
+
+    // 2) 주요 사건은 한 번에 하나. 간격이 안 찼으면 이번 도착은 조용히 넘긴다.
+    if (!majorReady()) { maybePerformBehavior(); return; }
+
+    // 3) 졸림 → 잠. 보리 자신의 상태라 가장 앞선다.
+    if (state.want.sleep) { state.want.sleep = false; claimMajor(); goSleep(); return; }
+
+    // 4) 배변. 이미 치우지 않은 것이 있으면 겹쳐 만들지 않는다.
+    if (state.want.poop && !state.poop) { state.want.poop = false; claimMajor(); doPoop(); return; }
+
+    // 5) 첫 식사 맥락 (첫 세션 학습용) — 상점 소개 뒤 한 박자. 하트가 없으면 시간으로 대체.
+    if (!state.mealDone && !state.bowl && !state.sugKey) {
+      var afterIntro = state.shopIntroDone && state.moves - (state.introMoves || 0) >= MEAL_AFTER_MOVES;
+      var fallback = !state.heartAt && state.homeAt && (Date.now() - state.homeAt) > MEAL_FALLBACK_MS;
+      if (afterIntro || fallback) {
+        claimMajor();
+        beginFirstMeal();
+        return;
+      }
+    }
+
+    // 6) 두 번째 이후의 식사 맥락 — 팝업으로 밀지 않고 보리의 행동으로 드러낸다.
+    if (state.want.meal) { state.want.meal = false; claimMajor(); mealContext(); return; }
+
+    // 7) 구매한 행동은 한가할 때 가끔
+    maybePerformBehavior();
+  }
+
+  // 첫 식사 맥락: 밥그릇이 아직 없으니 놓아주기를 제안한다 (첫 세션에서 한 번).
+  function beginFirstMeal() {
+    state.mealDone = true; state.mealMoves = state.moves;
+    state.sugKey = 'bowl'; renderSuggest();
+    // 첫 식사 국면이 열린 뒤부터 배변 시계를 돌린다 —
+    // 배변이 밥그릇 제안보다 먼저 나와 첫 세션의 학습 순서를 흐트리지 않게.
+    if (!state.due.bowel) state.due.bowel = Date.now() + rnd(bowelRange());
+  }
+
+  // 반복 식사 맥락: 밥그릇이 있으면 그 앞으로 가서 킁킁거린다. 없으면 제안을 다시 띄운다.
+  // '배고파'처럼 결핍을 말하지 않는다. 굶주림도 건강 악화도 없다.
+  function mealContext() {
+    // 먹이지 않아도 재촉하지 않는다. 다음 기회만 조용히 다시 잡는다(굶주림·패널티 없음).
+    state.due.meal = Date.now() + rnd(LIFE.mealIntervalMs);
+    if (!state.bowl) {
+      if (state.sugKey) return;              // 미응답 질문을 덮어쓰지 않는다
+      state.sugKey = 'bowl'; renderSuggest(); return;
+    }
+    var near = { x: Math.max(6, Math.min(state.bowl.x - 46, room.clientWidth - 114)),
+                 y: Math.max(room.clientHeight * FLOOR_TOP,
+                             Math.min(state.bowl.y - 22, room.clientHeight - 74)) };
+    petPhase('notice');
+    movePet(near.x, near.y, travelMs(near));
+    later(function () { if (room.querySelector('.pet')) bubble('킁킁', 2200); }, travelMs(near));
+  }
+
+  function doPoop() {
+    state.poopDone = true;          // 첫 배변이 있었는지 (Q5 제안 조건에 쓰인다)
+    state.poop = true; renderHome();
+    // 다음 배변을 바로 예약한다. 치우지 않은 상태면 evalClock 이 겹치지 않게 미룬다.
+    state.due.bowel = Date.now() + rnd(bowelRange());
+  }
+
+  // 졸림 → 잠 → 깨어남. 피로도는 '잠이 끝난 뒤'에 0이 된다.
+  // 잠자리를 사야 잘 수 있는 것이 아니다. 놓인 쉼터가 있으면 거기를 더 좋아할 뿐이다.
+  var sleepTimer = null;
+  function goSleep() {
+    var beds = objectsTagged('rest_surface');
+    if (beds.length) {
+      var b = beds[Math.floor(Math.random() * beds.length)], np = nearObject(b);
+      movePet(np.x, np.y, travelMs(np));
+    }
+    state.life = 'rest';            // 내부 상태값은 그대로 둔다 (.pet.resting 자세와 연결)
+    petPhase('resting');
+    var p = room.querySelector('.pet'); if (p) p.classList.add('resting');
+    bubble('쿨…', LIFE.sleepDurationMs - 800);
+    // 깨어날 예약은 전용 핸들을 쓴다. idleTimer 를 공유하면
+    // 자는 동안의 renderHome()/startLife() 가 이 예약을 지워 영구 수면이 된다.
+    clearTimeout(sleepTimer);
+    sleepTimer = later(function () {
+      sleepTimer = null;
+      var q = room.querySelector('.pet'); if (q) q.classList.remove('resting');
+      state.life = 'idle'; petPhase('idle');
+      state.sleepy = false;
+      gaugeAdd('tired', -GAUGE_MAX);                  // 다 자고 나서야 피로도가 0이 된다
+      state.due.fatigue = Date.now() + rnd(LIFE.fatigueGainMs);   // 깨어난 순간부터 다시 쌓인다
+      clearTimeout(idleTimer);
+      idleTimer = later(lifeTick, dwellMs());
+    }, LIFE.sleepDurationMs);
+  }
+
+  // ---------- 생활 시계 ----------
+  // 스케줄러는 이것 하나뿐이다. 각 주기는 절대 시각(state.due)으로 관리하므로
+  // Home↔상점을 오가도 진행이 0으로 되돌아가지 않고, 중복 스케줄도 생기지 않는다.
+  var clockTimer = null;
+  function seedDue() {
+    var now = Date.now(), d = state.due;
+    if (!d.satiety) d.satiety = now + rnd(LIFE.satietyDecayMs);
+    if (!d.fatigue) d.fatigue = now + rnd(LIFE.fatigueGainMs);
+    if (!d.fun)     d.fun     = now + rnd(LIFE.funDecayMs);
+    // meal 은 첫 식사를 마친 뒤부터, bowel 은 첫 식사 국면이 열린 뒤부터 예약된다.
+  }
+  function startLifeClock() {
+    if (clockTimer) return;         // 이미 돌고 있으면 새로 만들지 않는다
+    seedDue();
+    (function loop() {
+      clockTimer = later(function () { clockTimer = null; evalClock(); loop(); }, LIFE.clockMs);
+    })();
+  }
+  function stopLifeClock() {
+    clearTimeout(clockTimer); clockTimer = null;
+    clearTimeout(sleepTimer); sleepTimer = null;
+  }
+
+  function evalClock() {
+    var now = Date.now(), d = state.due, asleep = (state.life === 'rest');
+
+    if (d.satiety && now >= d.satiety) {
+      gaugeAdd('full', -1);
+      d.satiety = now + rnd(LIFE.satietyDecayMs);
+    }
+    if (d.fun && now >= d.fun) {
+      gaugeAdd('fun', -1);
+      d.fun = now + rnd(LIFE.funDecayMs);
+    }
+    // 자는 동안에는 피로가 쌓이지 않는다.
+    if (!asleep && d.fatigue && now >= d.fatigue) {
+      gaugeAdd('tired', +1);
+      d.fatigue = now + rnd(LIFE.fatigueGainMs);
+      if (state.gauge.tired >= GAUGE_MAX && !state.sleepy) {
+        state.sleepy = true;                       // 졸린 티가 먼저 난다
+        state.want.sleep = true;
+        if ($('.scr.on').dataset.scr === 'home') bubble('하아암…', 2400);
+      }
+    }
+    if (d.meal && now >= d.meal) { state.want.meal = true; d.meal = 0; }
+    if (d.bowel && now >= d.bowel) {
+      if (state.poop) { d.bowel = now + rnd(bowelRange()); }   // 안 치운 게 있으면 겹치지 않게 미룬다
+      else { state.want.poop = true; d.bowel = 0; }
+    }
+  }
+
+  function showTapHint() {
+    if (state.tapHinted || state.everValid) return;
+    state.tapHinted = true;
+    room.querySelectorAll('.hintbar').forEach(function (n) { n.remove(); });
+    var h = document.createElement('div');
+    h.className = 'hintbar'; h.id = 'tapHint';
+    h.textContent = state.name + '를 눌러 보세요.';
+    room.appendChild(h);
+  }
+
+  function renderHome() {
+    room.querySelectorAll('.pet,.obj,.bubble,.hintbar,.fx,.zoomwrap,.placebar,.okbtn').forEach(function (n) { n.remove(); });
+    var p = makePet();
+    p.style.left = state.pos.x + 'px';
+    p.style.top = state.pos.y + 'px';
+    p.dataset.role = 'pet';
+    room.appendChild(p);
+    petPhase(state.eating ? 'eating' : 'idle');
+    room.dataset.activity = state.activity;
+    if (state.bowl) {
+      var b = document.createElement('div');
+      b.className = 'obj'; b.dataset.role = 'bowl';
+      b.style.cssText = 'left:' + state.bowl.x + 'px;top:' + state.bowl.y + 'px';
+      b.textContent = state.eating ? '밥그릇 (먹는 중)' : '밥그릇';
+      room.appendChild(b);
+    }
+    if (state.poop) {
+      var g = document.createElement('div');
+      g.className = 'obj'; g.dataset.role = 'poop';
+      g.style.cssText = 'left:48px;top:250px';
+      g.textContent = '배변 흔적';
+      room.appendChild(g);
+    }
+    if (state.life === 'rest') p.classList.add('resting');
+    if (state.outfit) {                                  // 저충실도 착용 표시
+      var w = document.createElement('div');
+      w.className = 'wear'; w.textContent = catalogItem(state.outfit).name;
+      p.appendChild(w);
+    }
+    state.objects.forEach(function (o) {                  // 상점에서 산 오브젝트들
+      var e = document.createElement('div');
+      e.className = 'obj placed' + (state.editMode ? ' editable' : '');
+      e.dataset.role = 'placed'; e.dataset.uid = o.uid;
+      e.style.cssText = 'left:' + o.x + 'px;top:' + o.y + 'px';
+      e.textContent = o.name;
+      room.appendChild(e);
+    });
+    $('#hudEdit').style.display = state.objects.length ? '' : 'none';
+    $('#hudEdit').classList.toggle('on', state.editMode);
+    renderHearts();
+    renderGauges();
+    renderSuggest();
+    if (!state.homeAt) state.homeAt = Date.now();
+    startLife();
+    startLifeClock();            // 이미 돌고 있으면 새로 만들지 않는다 (중복 스케줄 방지)
+    maybeVisitReward();          // 그날 첫 방문일 때만 1회
+  }
+
+  // 밥그릇 탭 → 알아차림 → 다가감 → 먹기. 애니메이션 시스템이 아니라 상태 전환이다.
+  function feedFromBowl() {
+    var b = room.querySelector('[data-role=bowl]');
+    if (!b || state.eating) return;
+    var bx = parseInt(b.style.left, 10), by = parseInt(b.style.top, 10);
+
+    b.textContent = '밥그릇 (밥 있음)';
+    state.life = 'feed';                        // 생활 루프가 끼어들지 않게 한다
+    petPhase('notice');
+    bubble('밥이다', 1400);                       // 1) 알아차림
+    fx('밥을 줬어요', 30, 34);
+
+    later(function () {                         // 2) 다가감
+      if (!room.querySelector('.pet')) return;
+      petPhase('moving');
+      movePet(Math.max(8, bx - 52), Math.max(70, by - 26));
+    }, 800);
+
+    later(function () {                         // 3) 먹기
+      if (!room.querySelector('.pet')) return;
+      state.eating = true; petPhase('eating');
+      b.textContent = '밥그릇 (먹는 중)';
+      bubble('냠냠', 2200);
+      award('feed', 30, 34);
+      gaugeAdd('full', +1);                     // 먹으면 포만감이 오른다
+    }, 2000);
+
+    later(function () {                         // 4) 생활 지속
+      state.eating = false;
+      state.life = 'idle';
+      if (room.querySelector('.pet')) petPhase('idle');
+      if (b.isConnected) b.textContent = '밥그릇 (빈 그릇)';
+      // 한 끼를 마친 시점부터 다음 식사 맥락을 예약한다.
+      // 제품에서는 4~6시간, 여기서는 LOW-FI_COMPRESSED_MEAL_INTERVAL 로 압축했다.
+      state.due.meal = Date.now() + rnd(LIFE.mealIntervalMs);
+      startLife();                              // 먹고 나면 다시 스스로 생활한다
+    }, 4600);
+  }
+
+  function bubble(text, ms) {
+    var p = room.querySelector('.pet'); if (!p) return;
+    room.querySelectorAll('.bubble').forEach(function (n) { n.remove(); });
+    var b = document.createElement('div');
+    b.className = 'bubble'; b.textContent = text;
+    b.style.cssText = 'left:' + (state.pos.x - 6) + 'px;top:' + (state.pos.y - 24) + 'px';
+    room.appendChild(b);
+    later(function () { b.remove(); }, ms || 3000);
+  }
+
+  function fx(text, x, y) {
+    var e = document.createElement('div');
+    e.className = 'fx'; e.textContent = text;
+    e.style.cssText = 'left:' + x + 'px;top:' + y + 'px';
+    room.appendChild(e);
+    later(function () { e.remove(); }, 1500);
+  }
+
+  // 상황형 제안 — 한 번 뜨면 답할 때까지 사라지지 않는다 (결정 C)
+  var SUG = {
+    // 어떤 행동이 달라지는지 미리 알려주지 않는다. 참가자가 스스로 알아채는지가 H16이다.
+    q2: { t: '가 평소 얼마나 활발했나요?', o: ['매우 적음','적음','보통','많음','매우 많음'], s: '' },
+    q3: { t: '는 하루에 몇 번 먹었나요?', o: ['1회 미만','1회','2회','3회','수시로'], s: '' },
+    q5: { t: '는 하루에 몇 번 배변했나요?', o: ['하루 1회 미만','1회','2회','3회','4회 이상'], s: '' },
+    q6: { t: '는 잠이 많은 편이었나요?', o: ['매우 적음','적음','보통','많음','매우 많음'], s: '' },
+    bowl: { t: '의 밥그릇을 놓아줄까요?', o: ['놓아주기'], s: '놓으면 밥그릇을 눌러 밥을 줄 수 있어요.' },
+    bed:  { t: '의 잠자리를 놓아줄까요?', o: ['놓아주기'], s: '' },
+    toy:  { t: '의 장난감을 놓아줄까요?', o: ['놓아주기'], s: '' }
+  };
+  function renderSuggest() {
+    var k = state.sugKey, box = $('#sugBox');
+    if (!k) { box.style.display = 'none'; return; }
+    var s = SUG[k];
+    box.style.display = '';
+    $('#sugTitle').textContent = state.name + s.t;
+    $('#sugSub').textContent = s.s;
+    $('#sugOpts').innerHTML = s.o.map(function (o) {
+      return '<div class="chip sm" data-v="' + o + '">' + o + '</div>';
+    }).join('');
+  }
+  $('#sugOpts').addEventListener('click', function (e) {
+    var c = e.target.closest('.chip'); if (!c) return;
+    var k = state.sugKey;
+    if (k === 'bowl') { state.sugKey = null; startPlace('bowl'); return; }
+    if (k === 'bed' || k === 'toy') { state.sugKey = null; renderHome(); return; }
+    state.answers[k] = c.dataset.v;
+    state.sugKey = null;
+    // Q5(배변 주기) 응답은 이후의 배변 간격에 실제로 반영된다.
+    // 저충실도 압축값이며 생리 모델이 아니다 — LIFE.bowelByAnswer 참조.
+    if (k === 'q5') state.due.bowel = Date.now() + rnd(bowelRange());
+    if (k === 'q2') {
+      var high = (c.dataset.v === '많음' || c.dataset.v === '매우 많음');
+      state.activity = high ? 'high' : 'normal';
+      state.step = high ? 46 : 10;              // 유휴 이동 폭이 달라진다
+      renderHome();
+      movePet(high ? 196 : 96, high ? 96 : 214); // 답한 결과가 즉시 눈에 보인다
+      // 변화를 말로 알려주지 않는다. H16은 참가자가 스스로 알아채는지를 본다.
+      return;
+    }
+    renderHome();
+  });
+
+  // 배치 모드
+  // ---------- 오브젝트 배치: 끌어다 놓고 확인하는 방식 ----------
+  // 가구 배치 앱과 같은 순서: 안내 한 줄 → 고스트를 끌어 놓음 → 미리보기 → 확인 눌러 확정.
+  // 확인을 누르기 전에는 확정되지 않는다.
+  var placing = null;          // 'bowl' | null
+  var placeStage = 'idle';     // 'idle'(아직 안 놓음) | 'preview'(놓았지만 미확정)
+  var ghostDrag = false;
+  var dragOff = { x: 24, y: 14 };   // 집은 지점과 오브젝트 좌상단의 차이 — 튀지 않게
+
+  function onGhostMove(e) {
+    if (!ghostDrag) return;
+    e.preventDefault();                            // 터치 스크롤이 제스처를 뺏지 않게
+    var r = room.getBoundingClientRect();
+    moveGhost(e.clientX - r.left - dragOff.x, e.clientY - r.top - dragOff.y);
+  }
+  function onGhostUp() {
+    if (!ghostDrag) return;
+    ghostDrag = false;
+    room.classList.remove('placing');
+    document.removeEventListener('pointermove', onGhostMove);
+    document.removeEventListener('pointerup', onGhostUp);
+    document.removeEventListener('pointercancel', onGhostUp);
+  }
+  function endGhostDrag() { onGhostUp(); }
+
+  function ghostValid(y) { return y >= room.clientHeight * FLOOR_TOP; }   // 넓어진 바닥 영역
+
+  var OK_SIZE = 46;   // 모바일 최소 탭 타깃(>=44px)
+  function syncGhost() {
+    var g = $('#ghost'), okc = $('#placeOk');
+    if (!g) return;
+    var gx = parseInt(g.style.left, 10), gy = parseInt(g.style.top, 10);
+    var gw = g.offsetWidth, gh = g.offsetHeight;
+    var bad = placeStage === 'preview' && !ghostValid(gy);
+    g.classList.toggle('bad', bad);
+    if (!okc) return;
+    okc.style.display = placeStage === 'preview' ? '' : 'none';
+    okc.classList.toggle('off', bad);
+
+    // 고스트 바로 아래 가운데가 기본. 아래가 없으면 위, 그것도 없으면 옆.
+    // 어떤 경우에도 방 밖으로 나가거나 고스트를 덮지 않는다.
+    var W = room.clientWidth, H = room.clientHeight, M = 6, GAP = 8;
+    var x = gx + gw / 2 - OK_SIZE / 2;
+    var y = gy + gh + GAP;
+    if (y + OK_SIZE > H - M) y = gy - OK_SIZE - GAP;
+    x = Math.max(M, Math.min(x, W - OK_SIZE - M));
+    y = Math.max(M, Math.min(y, H - OK_SIZE - M));
+    var overlaps = !(x + OK_SIZE < gx || x > gx + gw || y + OK_SIZE < gy || y > gy + gh);
+    if (overlaps) {                                  // 마지막 수단: 좌우로 비킨다
+      x = (gx + gw + GAP + OK_SIZE <= W - M) ? gx + gw + GAP : gx - OK_SIZE - GAP;
+      x = Math.max(M, Math.min(x, W - OK_SIZE - M));
+      y = Math.max(M, Math.min(gy + gh / 2 - OK_SIZE / 2, H - OK_SIZE - M));
+    }
+    okc.style.left = Math.round(x) + 'px';
+    okc.style.top  = Math.round(y) + 'px';
+  }
+
+  function moveGhost(x, y) {
+    var g = $('#ghost'); if (!g) return;
+    g.style.left = Math.max(4, Math.min(x, room.clientWidth - 54)) + 'px';
+    g.style.top  = Math.max(4, Math.min(y, room.clientHeight - 34)) + 'px';
+    if (placeStage === 'idle') placeStage = 'preview';
+    syncGhost();
+  }
+
+  var placeSpec = null;   // { label, onConfirm(x,y) }
+  function startPlace(spec) {
+    if (typeof spec === 'string') spec = { label: '밥그릇', onConfirm: function (x, y) {
+      state.bowl = { x: x, y: y }; renderHome(); fx('밥그릇을 놓았어요', 40, 40); } };
+    placeSpec = spec;
+    placing = spec.label; placeStage = 'idle'; ghostDrag = false;
+    renderHome();
+
+    var bar = document.createElement('div');
+    bar.className = 'placebar'; bar.id = 'placeBar';
+    bar.textContent = placeSpec.label + '을(를) 놓을 곳을 선택해주세요';
+    room.appendChild(bar);
+
+    var g = document.createElement('div');                 // 트레이에 놓인 고스트
+    g.className = 'obj ghost'; g.id = 'ghost';
+    g.style.cssText = 'left:' + Math.round(room.clientWidth / 2 - 24) + 'px;top:44px';
+    g.textContent = placeSpec.label;
+    room.appendChild(g);
+
+    var okc = document.createElement('div');
+    okc.className = 'okbtn'; okc.id = 'placeOk';
+    okc.textContent = '✓'; okc.style.display = 'none';
+    room.appendChild(okc);
+
+    // 고스트를 직접 끌어서 옮긴다.
+    // 터치에서는 손가락이 요소를 벗어나면 이후 pointermove 가 그 아래 요소로 전달된다.
+    // 그래서 move/up 은 고스트가 아니라 document 에 건다. setPointerCapture 에 의존하면
+    // 캡처가 실패하는 순간 드래그가 중간에 끊긴다(참가자 #2가 겪은 증상).
+    g.addEventListener('pointerdown', function (e) {
+      var gr = g.getBoundingClientRect();
+      dragOff.x = e.clientX - gr.left;
+      dragOff.y = e.clientY - gr.top;
+      ghostDrag = true;
+      room.classList.add('placing');               // 드래그 중 스크롤·팬 차단
+      document.addEventListener('pointermove', onGhostMove, { passive: false });
+      document.addEventListener('pointerup', onGhostUp);
+      document.addEventListener('pointercancel', onGhostUp);
+      e.preventDefault(); e.stopPropagation();
+    });
+
+    okc.addEventListener('pointerup', function (e) {
+      e.stopPropagation();
+      if (placeStage !== 'preview' || okc.classList.contains('off')) return;
+      var gg = $('#ghost');
+      var px = parseInt(gg.style.left, 10), py = parseInt(gg.style.top, 10);
+      var spec = placeSpec;
+      endGhostDrag();
+      placing = null; placeStage = 'idle'; placeSpec = null;
+      if (spec && spec.onConfirm) spec.onConfirm(px, py);
+    });
+  }
+
+  // Home 입력 처리
+  // Home 기본 시점의 입력은 탭만 구분하면 된다. 이동 거리 판정은 확대 상태에서만 쓴다.
+  room.addEventListener('pointerup', function (e) {
+    // 확대 상태에서는 Home 입력을 처리하지 않는다 (버블링으로 재확대되는 것 방지)
+    if (room.querySelector('.zoomwrap')) return;
+    if (placing) {
+      // 배치는 드래그 전용이다. 빈 곳을 눌러도 고스트가 옮겨가지 않고 확정되지도 않는다.
+      // 집어서 옮기고 확인하는 순서를 그대로 익히게 한다.
+      ghostDrag = false;
+      return;
+    }
+    var t = e.target;
+    if (t.closest('.hudheart') || t.closest('.hudedit') ||
+        t.closest('.hudgauge') || t.closest('.visitcard')) return;   // HUD 는 방의 빈 곳이 아니다
+    if (t.closest('.pet')) {
+      state.everValid = true; state.invalidTaps = 0;
+      var th = $('#tapHint'); if (th) th.remove();
+      openZoom(); return;
+    }
+    if (t.closest('[data-role=bowl]')) {
+      state.everValid = true; state.invalidTaps = 0;
+      feedFromBowl();
+      return;
+    }
+    var po = t.closest('[data-role=placed]');
+    if (po) {
+      state.everValid = true; state.invalidTaps = 0;
+      if (state.editMode) { pickUpObject(po.dataset.uid); return; }
+      var obj = null;
+      state.objects.forEach(function (o) { if (o.uid === po.dataset.uid) obj = o; });
+      if (obj && obj.tag === 'play_object') playWithToy(obj);
+      else if (obj) bubble('...', 1200);               // 그 외 오브젝트도 반응은 준다
+      return;
+    }
+    if (t.closest('[data-role=poop]')) {
+      state.everValid = true; state.invalidTaps = 0;
+      state.poop = false; state.cleaned = true;
+      renderHome();
+      fx('치웠어요', 40, 40);
+      award('clean', 40, 62);
+      // 결정 B: 청소가 정상 완료된 뒤에만 Q5를 비차단으로 제안.
+      // 결정 C: 이미 떠 있는 미응답 질문은 덮어쓰지 않는다.
+      later(function () {
+        if (state.sugKey) return;
+        if (!state.answers.q5) { state.sugKey = 'q5'; renderSuggest(); }
+      }, 1600);
+      return;
+    }
+    // 빈 영역 탭 — 세계를 바꾸지 않는다. 다만 헤맴 신호이므로 탭 힌트를 앞당긴다.
+    if (!state.everValid && !state.tapHinted) {
+      state.invalidTaps++;
+      showTapHint();
+    }
+  });
+
+  // 확대 + 직접 쓰다듬기
+  // 첫 하트 → 상점. 확대(쓰다듬기) 맥락에서 곧장 이어진다.
+  //   쓰다듬기 → 좋아하는 반응 → ♥ 가 보임 → 아주 짧은 한 박자 → 안내 한 줄 → 상점.
+  // Home 을 거쳐 돌아갔다가 여는 방식은 인과가 끊겨 읽히지 않았다(이전 회차 판단).
+  // 자동 노출은 여기 한 번뿐이고, 이후의 어떤 하트 획득도 상점을 열지 않는다.
+  function shopIntroFromZoom(w) {
+    if (state.shopIntroDone) return;
+    state.shopIntroDone = true;
+    state.introMoves = state.moves;
+    later(function () {
+      var r = w.isConnected ? w.querySelector('#zReact') : null;
+      if (r) r.textContent = '상점에서 하트를 사용할 수 있어요';
+      later(function () {
+        openShop(true);            // 먼저 화면을 상점으로 바꾸고
+        if (w.isConnected) w.remove();   // 그 다음 확대를 걷는다 — 중간에 Home 이 보이지 않게
+        room.classList.remove('zoomed');
+      }, SHOP_INTRO_LINE_MS);
+    }, SHOP_INTRO_BEAT_MS);
+  }
+
+  function openZoom() {
+    var w = document.createElement('div');
+    w.className = 'zoomwrap';
+    room.classList.add('zoomed');
+    // 문지르기 안내는 최초 1회만 (UX_FINAL §8).
+    // 반응 문구와 분리해 둔다. 그러지 않으면 짧은 탭 반응이 안내를 지워버려
+    // 참가자가 문지르기를 배우기 전에 단서를 잃는다(참가자 #1 실패 지점).
+    var firstHint = !state.rubHinted;
+    state.rubHinted = true;
+    w.innerHTML = '<div class="navbar plain"><div class="back" id="zClose">✕</div></div>' +
+                  '<div class="zoomstage" id="zStage"></div>' +
+                  (firstHint ? '<div class="zhint" id="zHint">손가락으로 보리를 천천히 쓰다듬어 주세요.</div>' : '') +
+                  '<div class="reaction" id="zReact"></div>';
+    room.appendChild(w);
+    var st = w.querySelector('#zStage');
+    var p = makePet(); p.className = 'pet zoom';
+    p.style.left = '55px'; p.style.top = '70px';
+    addZones(p, true);
+    st.appendChild(p);
+    var zc = w.querySelector('#zClose');
+    function closeZoom(e) {
+      if (e) { e.stopPropagation(); if (e.preventDefault) e.preventDefault(); }
+      w.remove(); room.classList.remove('zoomed');
+    }
+    zc.addEventListener('pointerup', closeZoom);
+    zc.addEventListener('click', closeZoom);   // 포인터 미지원 환경 대비
+
+    // 부위는 제스처가 처음 닿은 유효 부위로 고정한다(끝난 지점이 아니라).
+    // 머리에서 시작해 등으로 흘러도 머리 쓰다듬기다.
+    function zoneAt(x, y) {
+      var el = document.elementFromPoint(x, y);
+      var z = el && el.closest ? el.closest('.zone') : null;
+      return z ? z.dataset.name : null;
+    }
+    // 제스처는 보리 밖에서 시작할 수 있다. 그래서 추적은 확대 무대 전체에서 한다.
+    // 부위는 여전히 '처음 닿은 유효 부위'로 고정되며, 부위에 한 번도 닿지 않으면 쓰다듬기가 아니다.
+    var zp = null;
+    st.addEventListener('pointerdown', function (e) {
+      // 이동 거리는 실제 좌표 변화로만 센다. movementX/Y 는 합성·터치 입력에서 0이라 쓰지 않는다.
+      zp = { d: 0, z: zoneAt(e.clientX, e.clientY), lx: e.clientX, ly: e.clientY,
+             onPet: !!(e.target.closest && e.target.closest('.pet')) };
+      try { st.setPointerCapture(e.pointerId); } catch (err) {}
+    });
+    st.addEventListener('pointermove', function (e) {
+      if (!zp) return;
+      zp.d += Math.abs(e.clientX - zp.lx) + Math.abs(e.clientY - zp.ly);
+      zp.lx = e.clientX; zp.ly = e.clientY;
+      // 아직 잠기지 않았을 때만 확정한다. 한 번 잠기면 제스처 중에 바뀌지 않는다.
+      if (!zp.z) zp.z = zoneAt(e.clientX, e.clientY);
+    });
+    st.addEventListener('pointerup', function (e) {
+      if (!zp) return;
+      zp.d += Math.abs(e.clientX - zp.lx) + Math.abs(e.clientY - zp.ly);
+      if (!zp.z) zp.z = zoneAt(e.clientX, e.clientY);   // 끝까지 어떤 부위에도 닿지 않았을 때만
+      var name = zp.z, startedOnPet = zp.onPet;
+      var out = w.querySelector('#zReact');
+      // 쓰다듬기 판정은 오직 실제 문지르기(좌표 이동)뿐이다.
+      // 짧은 탭·반복 탭·이동 없는 길게 누르기는 모두 하트를 만들지 않는다.
+      var petting = zp.d >= RUB_DIST;
+      zp = null;
+      if (!name) {
+        // 부위에 한 번도 닿지 않은 제스처. 보리 위에서 시작했을 때만 미세 반응을 준다.
+        // 빈 배경만 훑은 제스처는 아무 반응도 만들지 않는다.
+        if (startedOnPet) { out.textContent = state.name + '가 살짝 움직였어요'; st.dataset.react = 'none'; }
+        return;
+      }
+      if (!petting) {
+        out.textContent = state.name + '가 눈을 깜박였어요 · 짧은 접촉';
+        st.dataset.react = 'tap';
+        return;
+      }
+      // 유효한 문지르기가 나왔으므로 안내는 역할을 다했다.
+      var zh = w.querySelector('#zHint'); if (zh) zh.remove();
+      if (state.favZones.indexOf(name) >= 0) {
+        out.textContent = '♥  ' + state.name + '가 기분 좋아해요 · ' + name;
+        st.dataset.react = 'heart';
+        if (!state.heartAt) { state.heartAt = Date.now(); state.heartMoves = state.moves; }
+        if (!state.firstHeartPaid) {                   // 첫 하트는 쿨다운과 무관하게 지급
+          state.firstHeartPaid = true;
+          delete state.lastAward.pet;
+        }
+        award('pet');
+        shopIntroFromZoom(w);      // 첫 하트라면 확대 상태 그대로 상점까지 이어진다
+      } else {
+        out.textContent = state.name + '가 편하게 몸을 맡겼어요 · ' + name;
+        st.dataset.react = 'neutral';
+      }
+    });
+  }
+
+  // ---------- 개인화 경로 ----------
+  var QDEF = {
+    q2: ['활동량', ['매우 적음','적음','보통','많음','매우 많음'], false],
+    q3: ['식사 주기', ['1회 미만','1회','2회','3회','수시로'], false],
+    q4: ['짖는 정도', ['거의 없음','드물게','보통','자주','매우 자주'], false],
+    q5: ['배변 주기', ['하루 1회 미만','1회','2회','3회','4회 이상'], false],
+    q6: ['수면양', ['매우 적음','적음','보통','많음','매우 많음'], false]
+  };
+  function renderPath() {
+    $('#pathList').innerHTML = Object.keys(QDEF).map(function (k) {
+      var a = state.answers[k];
+      return '<div class="row" data-q="' + k + '">' + QDEF[k][0] +
+             '<div class="r">' + (a ? a : '') + '</div></div>';
+    }).join('');
+  }
+  $('#pathList').addEventListener('click', function (e) {
+    var r = e.target.closest('.row'); if (!r) return;
+    var k = r.dataset.q, d = QDEF[k];
+    $('#qdHead').innerHTML = state.name + '의 ' + d[0] + '은<br>어땠나요?';
+    $('#qdOpts').innerHTML = d[1].map(function (o) {
+      return '<div class="chip wide" data-v="' + o + '">' + o + '</div>';
+    }).join('');
+    // 유예 선택지는 Q3·Q5 모두에서 삭제됐다(결정 A). 답하지 않는 것 자체가 유예다.
+    $('#qdDefer').innerHTML = '';
+    $('#qdOpts').dataset.q = k; $('#qdDefer').dataset.q = k;
+    go('q-detail');
+  });
+  ['#qdOpts', '#qdDefer'].forEach(function (sel) {
+    $(sel).addEventListener('click', function (e) {
+      var c = e.target.closest('.chip'); if (!c) return;
+      state.answers[this.dataset.q] = c.dataset.v;
+      go('path');
+    });
+  });
+
+  // ---------- 진행자 이벤트 ----------
+  $$('#facil [data-ev]').forEach(function (b) {
+    b.onclick = function () {
+      var ev = b.dataset.ev;
+      if (ev === 'reset') {
+        state.bowl = null; state.poop = false; state.sugKey = null; state.answers = {};
+        state.activity = 'normal'; state.invalidTaps = 0; state.hinted = false;
+        state.everValid = false; state.eating = false; state.zoomHinted = false;
+        endGhostDrag();
+        placing = null; placeStage = 'idle'; ghostDrag = false;   // 배치 모드도 함께 종료
+        state.life = 'idle'; state.moves = 0; state.heartAt = 0; state.heartMoves = 0; state.homeAt = 0;
+        state.tapHinted = false; state.rubHinted = false;
+        state.mealDone = false; state.mealMoves = 0;
+        state.poopDone = false; state.introMoves = 0;
+        state.editMode = false; state.firstHeartPaid = false; state.lastAward = {};
+        state.objects = [];      // 방만 비운다. 보유 아이템과 하트 잔액은 유지
+        // 반복 주기도 함께 초기화한다. 이전 시나리오의 예약이 남으면 다음 시나리오를 오염시킨다.
+        state.gauge = { full: 1, tired: 0, fun: 1 }; state.bonusArmed = true; state.sleepy = false;
+        state.due  = { satiety: 0, fatigue: 0, fun: 0, meal: 0, bowel: 0 };
+        state.want = { sleep: false, poop: false, meal: false };
+        stopLifeClock(); lastMajorAt = 0; majorGapMs = 0;
+        lastSpot = -1;
+        state.pos = { x: 110, y: 190 }; state.step = 14;
+        renderHome(); return;
+      }
+      // 생성 성공은 진행자만 발생시킨다. 참가자 화면에는 CTA가 없고 자동으로 전환된다.
+      if (ev === 'gensuccess') { go('candidates'); return; }
+      if (ev === 'genfail') { go('gen-fail'); return; }
+      if (ev === 'failnext') { state.failNext = true; return; }
+      if (ev === 'meetdone') { clearTimeout(meetT1); clearTimeout(meetT2); go('home'); return; }
+      if (ev === 'bubble') { bubble('졸려요…', 5000); return; }
+      if (ev === 'poop') { state.poop = true; renderHome(); return; }
+      // 상황형 제안: 이미 떠 있는 미응답 질문은 덮어쓰지 않는다
+      var map = { move: 'q2', meal: 'bowl', sleep: 'bed', play: 'toy' };
+      var k = map[ev];
+      if (k === 'bowl' && state.bowl) k = 'q3';   // 배치가 질문보다 먼저
+      if (k === 'bed' && !state.answers.q6 && state.bowl) k = 'q6';
+      if (state.sugKey) return;
+      if (state.answers[k]) return;
+      state.sugKey = k; renderSuggest();
+    };
+  });
+
+  // 생활 주기 조작 — 진행자 전용. 참가자 화면에는 노출되지 않는다.
+  // 압축 시간을 더 줄여 한 세션 안에서 반복 주기를 확인할 때 쓴다.
+  $$('#facil [data-lev]').forEach(function (b) {
+    b.onclick = function () {
+      var ev = b.dataset.lev, now = Date.now();
+      if (ev === 'tired')  { gaugeAdd('tired', +1);
+        if (state.gauge.tired >= GAUGE_MAX && !state.sleepy) { state.sleepy = true; state.want.sleep = true; } }
+      if (ev === 'sleepy') { gaugeAdd('tired', GAUGE_MAX); state.sleepy = true; state.want.sleep = true;
+        lastMajorAt = 0; }
+      if (ev === 'wake')   { state.sleepy = false; state.want.sleep = false; gaugeAdd('tired', -GAUGE_MAX);
+        state.due.fatigue = now + rnd(LIFE.fatigueGainMs); }
+      if (ev === 'meal')   { state.want.meal = true; state.due.meal = 0; lastMajorAt = 0; }
+      if (ev === 'bowel')  { state.due.bowel = now; lastMajorAt = 0; }
+      if (ev === 'cycle')  {                       // 모든 예약을 곧 만료되게 당긴다
+        var d = state.due;
+        ['satiety','fatigue','fun','meal','bowel'].forEach(function (k) { if (d[k]) d[k] = now + 800; });
+        lastMajorAt = 0;
+      }
+      renderGauges();
+    };
+  });
+
+  // 연속 방문 시뮬레이션 — 진행자 전용. 참가자 화면에는 노출되지 않는다.
+  // 실제 캘린더도 서버 상태도 아니다. 프로토타입 안의 날짜 값을 옮길 뿐이다.
+  $$('#facil [data-vev]').forEach(function (b) {
+    b.onclick = function () {
+      var v = state.visit, ev = b.dataset.vev;
+      if (!v.y) { var n = new Date(); v.y = n.getFullYear(); v.m = n.getMonth() + 1; v.d = n.getDate(); }
+      if (ev === 'next')  { v.d += 1; }
+      if (ev === 'skip')  { v.d += 2; }                     // 하루 건너뛰면 다음 방문은 1일차
+      if (ev === 'month') { v.m += 1; if (v.m > 12) { v.m = 1; v.y += 1; } v.d = 1; }
+      if (ev.charAt(0) === 'd') {                           // 특정 연속 일수부터 시작
+        var want = parseInt(ev.slice(1), 10);
+        v.d = want; v.streak = want - 1;
+        v.last = { y: v.y, m: v.m, d: v.d - 1 };
+        v.lastKey = v.y + '-' + v.m + '-' + (v.d - 1);
+      }
+      if (ev === 'next' || ev === 'skip' || ev === 'month') v.lastKey = null;
+      $('#visitCard').style.display = 'none';
+      var r = visitToday();
+      if (r) showVisitCard(r);
+      go('home');
+    };
+  });
+
+  // 시계
+  setInterval(function () {
+    var d = new Date();
+    $('#clock').textContent = d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0');
+  }, 10000);
+
+  // ================= 통합 실험: 하트 · 상점 · 오브젝트 =================
+
+  function renderHearts() {
+    var a = $('#hudHeart'), b = $('#shopHearts');
+    if (a) a.textContent = '♥ ' + state.hearts;
+    if (b) b.textContent = '♥ ' + state.hearts;
+  }
+
+  // ---------- 생활 상태 게이지 ----------
+  // 긍정 표현만 쓴다. 배고픔/피로도/심심함이 아니라 포만감/휴식/즐거움이다.
+  // 낮은 값은 '문제'가 아니라 '해줄 수 있는 일'이다. 경고색·느낌표·재촉 문구를 만들지 않는다.
+  var GAUGE_ORDER = ['full', 'tired', 'fun'];
+  var GAUGE_LABEL = { full: '포만감', tired: '피로도', fun: '즐거움' };
+
+  // 세 게이지 모두 같은 막대로 그린다. 피로도만 색이나 경고를 달리하지 않는다.
+  // 피로도가 낮다고 빈 막대가 '부족'처럼 읽히는 것은 감수한다 — 경고를 넣는 쪽이 더 나쁘다.
+  function renderGauges() {
+    var el = $('#hudGauge'); if (!el) return;
+    el.innerHTML = GAUGE_ORDER.map(function (k) {
+      var v = state.gauge[k], bar = '';
+      for (var i = 0; i < GAUGE_MAX; i++) bar += (i < v ? '▰' : '▱');
+      return '<div class="grow"><span class="gl">' + GAUGE_LABEL[k] + '</span>' +
+             '<span class="gb">' + bar + '</span></div>';
+    }).join('');
+  }
+
+  // 이상적인 상태 — 피로도는 방향이 반대다.
+  //   포만감 3 · 피로도 0 · 즐거움 3
+  function idealState() {
+    return state.gauge.full >= GAUGE_MAX && state.gauge.tired === 0 && state.gauge.fun >= GAUGE_MAX;
+  }
+  // 보너스는 '그 상태에 막 도달한 순간'에만 준다. 머물러 있다고 반복 지급하지 않는다.
+  // 한 번이라도 그 상태를 벗어나야 다시 자격이 생긴다.
+  function checkIdeal() {
+    if (!idealState()) { state.bonusArmed = true; return false; }
+    if (!state.bonusArmed) return false;
+    state.bonusArmed = false;
+    state.hearts += ALL_FULL_BONUS; renderHearts();
+    fx('♥ +' + ALL_FULL_BONUS, 30, 34);
+    bubble('보리가 아주 편안해 보여요', 2600);
+    return true;
+  }
+  // 게이지 변화는 전부 이 하나를 지난다. 0~GAUGE_MAX 로 고정되고, 매번 자격을 다시 본다.
+  function gaugeAdd(k, n) {
+    var v = Math.max(0, Math.min(GAUGE_MAX, state.gauge[k] + n));
+    if (v === state.gauge[k]) { checkIdeal(); return; }
+    state.gauge[k] = v; renderGauges();
+    checkIdeal();
+  }
+
+  // ---------- 이번 달 연속 방문 ----------
+  // 실제 캘린더/서버 상태가 아니다. 프로토타입 안의 시뮬레이션 날짜다.
+  function visitToday() {
+    var v = state.visit;
+    if (!v.y) { var n = new Date(); v.y = n.getFullYear(); v.m = n.getMonth() + 1; v.d = n.getDate(); }
+    var key = v.y + '-' + v.m + '-' + v.d;
+    if (v.lastKey === key) return null;                  // 오늘은 이미 만났다
+    var p = v.last;
+    // 같은 달의 바로 다음 날일 때만 이어진다. 달이 바뀌거나 하루라도 건너뛰면 1일차부터.
+    v.streak = (p && p.y === v.y && p.m === v.m && v.d === p.d + 1) ? v.streak + 1 : 1;
+    v.lastKey = key; v.last = { y: v.y, m: v.m, d: v.d };
+    var n2 = visitHeart(v.streak);
+    state.hearts += n2; renderHearts();
+    return { streak: v.streak, heart: n2 };
+  }
+  function showVisitCard(r) {
+    var c = $('#visitCard'); if (!c) return;
+    $('#visitStreak').textContent = '이번 달 ' + r.streak + '일 연속으로 만났어요';
+    $('#visitHeart').textContent = '오늘 ♥' + r.heart;
+    c.style.display = '';
+  }
+  $('#visitOk').addEventListener('pointerup', function (e) {
+    e.stopPropagation(); $('#visitCard').style.display = 'none';
+  });
+  function maybeVisitReward() {
+    var r = visitToday();
+    if (!r) return;
+    later(function () {
+      if ($('.scr.on').dataset.scr !== 'home') return;
+      if (placing) return;                     // 배치 중이면 안내를 겹치지 않는다
+      showVisitCard(r);
+    }, 900);
+  }
+
+  // 하트 지급. 같은 행동을 반복해 무한히 모으지 못하게 내부 쿨다운만 둔다.
+  // 참가자에게는 캡·스트릭·미션을 보여주지 않는다.
+  function award(kind, x, y) {
+    var now = Date.now();
+    if (state.lastAward[kind] && now - state.lastAward[kind] < FARM_COOLDOWN_MS) return 0;
+    state.lastAward[kind] = now;
+    var n = HEART[kind] || 1;
+    state.hearts += n;
+    renderHearts();
+    fx('♥ +' + n, (x == null ? 30 : x), (y == null ? 34 : y));
+    return n;
+  }
+
+  // ---------- 상점 ----------
+  function itemState(item, cat) {
+    if (!state.owned[item.id]) return state.hearts >= item.price ? 'affordable' : 'poor';
+    if (cat === 'clothing') return state.outfit === item.id ? 'equipped' : 'owned';
+    if (cat === 'behavior') return 'active';
+    return 'placeable';
+  }
+  var STATE_LABEL = {
+    affordable: '구매', poor: '부족', owned: '입히기',
+    equipped: '입는 중', active: '사용 중', placeable: '놓기'
+  };
+
+  function renderShopTabs() {
+    $('#shopTabs').innerHTML = CAT_ORDER.map(function (c) {
+      return '<button data-cat="' + c + '" class="' + (state.shopCat === c ? 'on' : '') + '">' +
+             CAT_LABEL[c] + '</button>';
+    }).join('');
+  }
+  function renderShopList() {
+    var cat = state.shopCat, arr = CATALOG[cat];
+    $('#shopList').innerHTML = arr.map(function (it) {
+      var st = itemState(it, cat);
+      var cls = (st === 'affordable') ? 'act buy' : (st === 'poor' ? 'act off' : 'act');
+      return '<div class="shopcard' + (state.owned[it.id] ? ' owned' : '') + '" data-id="' + it.id + '">' +
+             '<span class="nm">' + it.name + '</span>' +
+             '<span class="pr">♥ ' + it.price + '</span>' +
+             '<span class="' + cls + '" data-act="' + st + '">' + STATE_LABEL[st] + '</span></div>';
+    }).join('');
+  }
+  function renderShop() { renderShopTabs(); renderShopList(); renderHearts(); }
+
+  $('#shopTabs').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-cat]'); if (!b) return;
+    state.shopCat = b.dataset.cat; renderShop();
+  });
+  $('#shopBack').addEventListener('click', function () { go('home'); });
+
+  $('#shopList').addEventListener('click', function (e) {
+    var btn = e.target.closest('.act'); if (!btn) return;
+    var card = btn.closest('.shopcard'); if (!card) return;
+    var item = catalogItem(card.dataset.id), cat = catOf(card.dataset.id);
+    if (!item) return;
+    var st = btn.dataset.act;
+
+    if (st === 'poor') return;                       // 조용히 무시. 재촉 문구 없음
+    if (st === 'affordable') {                       // 구매
+      if (state.hearts < item.price) return;
+      state.hearts -= item.price;
+      state.owned[item.id] = true;
+      renderShop();
+      return;
+    }
+    if (st === 'owned') { state.outfit = item.id; renderShop(); return; }      // 착용
+    if (st === 'equipped') { state.outfit = null; renderShop(); return; }      // 해제
+    if (st === 'active') return;                                              // 행동은 이미 사용 중
+    if (st === 'placeable') {                                                 // 가구·장난감 배치
+      go('home');
+      startPlace({ label: item.name, onConfirm: function (x, y) {
+        state.objects.push({ uid: 'o' + (++objSeq), id: item.id, name: item.name,
+                             cat: cat, tag: item.tag || 'decorative_only', x: x, y: y });
+        renderHome();
+        fx(item.name + '을(를) 놓았어요', 40, 40);
+      }});
+    }
+  });
+  var objSeq = 0;
+
+  function openShop(auto) {
+    state.shopCat = 'furniture';
+    go('shop');
+    renderShop();
+    if (auto) state.shopIntroDone = true;
+  }
+  // 확대(쓰다듬기) 상태 신호 — 이미 쓰고 있는 것과 같은 신호를 재사용한다(별도 변수를 만들지 않는다).
+  function zoomOpen() { return !!room.querySelector('.zoomwrap'); }
+
+  // 수동 상점 진입(하트 HUD 탭)의 조건은 두 가지를 모두 만족해야 한다.
+  //   (1) 첫 상점 소개가 끝났다  — 상점의 첫 발견은 반드시 첫 하트 온보딩에서 와야 한다
+  //   (2) 확대 상태가 아니다    — 확대 중의 탭은 닫기(✕)를 노린 것이다
+  // 자동 온보딩 경로(openShop(true))는 이 가드를 거치지 않는다. 확대에서 상점으로 잇는 것이 그 경로의 일이다.
+  function canOpenShopManually() { return state.shopIntroDone && !zoomOpen(); }
+
+  $('#hudHeart').addEventListener('pointerup', function (e) {
+    e.stopPropagation();
+    if (!canOpenShopManually()) return;   // 잔액은 계속 보이지만 진입점으로는 동작하지 않는다
+    openShop(false);
+  });
+
+  // ---------- 편집(재배치) ----------
+  $('#hudEdit').addEventListener('pointerup', function (e) {
+    e.stopPropagation();
+    state.editMode = !state.editMode;
+    this.classList.toggle('on', state.editMode);
+    renderHome();
+  });
+  function pickUpObject(uid) {
+    var idx = -1;
+    for (var i = 0; i < state.objects.length; i++) if (state.objects[i].uid === uid) idx = i;
+    if (idx < 0) return;
+    var o = state.objects.splice(idx, 1)[0];
+    startPlace({ label: o.name, onConfirm: function (x, y) {
+      o.x = x; o.y = y; state.objects.push(o);
+      state.editMode = false;
+      renderHome();
+    }});
+  }
+
+  // ---------- 오브젝트가 행동을 바꾼다 ----------
+  function objectsTagged(tag) {
+    return state.objects.filter(function (o) { return o.tag === tag; });
+  }
+  function nearObject(o) {   // 오브젝트 옆에 서는 좌표
+    return { x: Math.max(6, Math.min(o.x - 46, room.clientWidth - 114)),
+             y: Math.max(room.clientHeight * FLOOR_TOP, Math.min(o.y - 22, room.clientHeight - 74)) };
+  }
+
+  // 구매한 행동은 한가할 때 가끔 나타난다. 개별 애니메이션이 아니라 공통 표현이다.
+  function unlockedBehaviors() {
+    return CATALOG.behavior.filter(function (b) { return state.owned[b.id]; });
+  }
+  function maybePerformBehavior() {
+    var list = unlockedBehaviors();
+    if (!list.length || state.life !== 'idle') return false;
+    if (Math.random() > 0.55) return false;
+    bubble(list[Math.floor(Math.random() * list.length)].name, 2000);
+    return true;
+  }
+
+  // 장난감 상호작용 — 카탈로그 전체가 이 하나의 메커니즘을 공유한다.
+  function playWithToy(o) {
+    if (state.life === 'play' || state.life === 'feed') return;
+    state.life = 'play'; petPhase('notice');
+    bubble('저거다', 1200);
+    var near = nearObject(o);
+    later(function () {
+      if (!room.querySelector('.pet')) return;
+      petPhase('moving'); movePet(near.x, near.y, travelMs(near));
+    }, 700);
+    later(function () {
+      if (!room.querySelector('.pet')) return;
+      petPhase('playing'); bubble('신난다', 2200);
+      award('play', 30, 34);
+      gaugeAdd('fun', +1);                      // 놀고 나면 즐거움이 오른다
+    }, 2100);
+    later(function () {
+      state.life = 'idle';
+      if (room.querySelector('.pet')) petPhase('idle');
+      startLife();
+    }, 4600);
+  }
+
+  // ---------- 개발/QA 전용 진입 (제품 UX 아님) ----------
+  // ?qa=petting : 실기기 터치로 쓰다듬기만 확인하기 위한 임시 우회로.
+  // 온보딩·생성을 건너뛰고 Home 에서 시작하며, 쓰다듬기 판정 로직은 그대로 쓴다.
+  // 반응을 흉내 내지 않고 하트를 자동으로 만들지도 않는다. 진행자 패널도 열지 않는다.
+  // ?qa=candidates : 후보 선택부터 시작해 공간·첫 만남·Home 까지 정상 진행을 확인하는 우회로.
+  //   등록·사진·Q1·생성이 이미 끝난 상태만 세운다. 후보는 고르지 않은 상태로 둔다.
+
+  // 온보딩을 건너뛴 경로에서도 등록이 끝난 것처럼 보이도록 상태와 화면을 맞춘다.
+  // (후보 화면의 `다시 준비하기 → 사진 수정` 처럼 되돌아가는 경로가 비어 보이지 않게 한다.)
+  function qaPresetRegistered() {
+    fixtureRegistered();                       // 종·이름·성별·선호 부위
+    $('#photoTitle').textContent = state.name + '의 사진';
+    $('#q1Title').textContent = state.name + '에 대해';
+    $('#q1Head').innerHTML = state.name + '가 쓰다듬을 때<br>좋아했던 부위는?';
+    $('#photoEmpty').style.display = 'none';
+    $('#photoFilled').style.display = '';
+    $('#photoNext').classList.remove('disabled'); $('#photoNext').classList.add('primary');
+    $$('#q1zones .chip').forEach(function (c) {
+      c.classList.toggle('on', state.favZones.indexOf(c.dataset.v) >= 0);
+    });
+    $('#q1Next').classList.remove('disabled'); $('#q1Next').classList.add('primary');
+  }
+
+  var qaMode = (String(location.search).match(/[?&]qa=([A-Za-z0-9_-]{1,20})/) || [])[1];
+  if (qaMode === 'petting') {
+    state.species = '강아지';
+    state.gender = '남아';
+    state.name = '보리';
+    state.favZones = ['머리'];   // 선호 = 머리 하나. 나머지 부위는 중립이어야 한다.
+    state.hearts = QA_START_HEARTS;
+    go('home');
+  } else if (qaMode === 'candidates') {
+    qaPresetRegistered();
+    state.hearts = QA_START_HEARTS;   // 벌기·쓰기를 모두 보여줄 수 있는 최소 테스트 잔액
+    state.candidate = 0;         // 후보는 참가자가 직접 고른다
+    state.hiddenOnce = false;
+    go('candidates');
+  } else if (qaMode === 'integrated') {
+    // 통합 참가자 테스트 전용. 생성 대기만 건너뛰고 나머지는 전부 실제 조건이다.
+    // candidates 와 다른 점은 단 하나: 하트 잔액을 채워주지 않는다.
+    // 첫 하트는 반드시 쓰다듬기로 벌어야 하고, 첫 상점에서는 아직 아무것도 살 수 없다.
+    qaPresetRegistered();
+    state.hearts = 0;
+    state.candidate = 0;
+    state.hiddenOnce = false;
+    go('candidates');
+  } else {
+    go('login');
+  }
+})();
+</script>
