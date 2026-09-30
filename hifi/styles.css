@@ -677,6 +677,32 @@ body.editing .obj { animation: jiggle 2.6s var(--e-soft) infinite; }
 .toast .ic { color: var(--heart-300); }
 @keyframes toast-in { from { opacity:0; transform: translate(-50%, 10px);} to { opacity:1; transform: translate(-50%,0);} }
 
+/* ============================================================
+   Generated character (Character Asset Pack) — replaces the SVG
+   placeholder when a canonical pet exists. One image per slot; the
+   existing data-act / .glad states choose which one is visible.
+   ============================================================ */
+.pet .char {
+  position: absolute; display: none; max-width: none; pointer-events: none;
+  user-select: none; -webkit-user-drag: none;
+  transform-origin: 50% 100%; animation: breathe 4.4s var(--e-soft) infinite;
+}
+.pet .char[data-slot="base"] { display: block; }
+.pet[data-act="moving"] .char[data-slot="base"],
+.pet[data-act="sleeping"] .char[data-slot="base"], .pet[data-act="resting"] .char[data-slot="base"],
+.pet[data-act="eating"] .char[data-slot="base"], .pet[data-act="playing"] .char[data-slot="base"] { display: none; }
+.pet[data-act="moving"] .char[data-slot="walk"] { display: block; animation: bodybob var(--step) ease-in-out infinite; }
+.pet[data-act="sleeping"] .char[data-slot="sleep"], .pet[data-act="resting"] .char[data-slot="sleep"] { display: block; animation-duration: 6.6s; }
+.pet[data-act="eating"] .char[data-slot="eat"] { display: block; }
+.pet[data-act="playing"] .char[data-slot="play"] { display: block; animation: hop .58s var(--e-out) infinite; }
+/* the positive petting pose holds briefly, then she settles back */
+.pet.glad .char[data-slot="glad"] { display: block; animation: char-glad 1.8s linear both; }
+.pet.glad .char[data-slot="base"] { animation: char-under-glad 1.8s linear both; }
+@keyframes char-glad { 0%, 82% { opacity: 1 } 100% { opacity: 0 } }
+@keyframes char-under-glad { 0%, 82% { opacity: 0 } 100% { opacity: 1 } }
+/* no placeholder flash while a generated character is on its way */
+html.char-loading #room .pet { visibility: hidden; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important;
                            transition-duration: .001ms !important; }

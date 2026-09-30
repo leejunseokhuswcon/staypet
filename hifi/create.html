@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>StayPet — 함께 지낼 아이 만들기</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="create.css">
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="i-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
+    <path d="M6.5 6.5 17.5 17.5M17.5 6.5 6.5 17.5"/>
+  </symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M5 12.5 10 17.5 19 7"/>
+  </symbol>
+  <symbol id="i-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14.5 5 8 12l6.5 7"/>
+  </symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
+    <path d="M12 5.5v13M5.5 12h13"/>
+  </symbol>
+  <symbol id="i-paw" viewBox="0 0 32 32" fill="none">
+    <ellipse cx="16" cy="21" rx="6.4" ry="5.2" fill="currentColor"/>
+    <ellipse cx="8.6" cy="14.4" rx="2.7" ry="3.4" fill="currentColor"/>
+    <ellipse cx="14" cy="11.4" rx="2.7" ry="3.6" fill="currentColor"/>
+    <ellipse cx="19.8" cy="11.8" rx="2.7" ry="3.5" fill="currentColor"/>
+    <ellipse cx="24.4" cy="15.4" rx="2.6" ry="3.2" fill="currentColor"/>
+  </symbol>
+</defs></svg>
+
+<div id="device" class="cf">
+
+  <!-- ============ 1. 기본 정보: 종 · 이름 · 성별 (한 단계) ============ -->
+  <section class="screen cf-screen" data-screen="basics" aria-labelledby="basicsTitle">
+    <header class="cf-top"></header>
+    <div class="cf-body scroll">
+      <h1 class="cf-title" id="basicsTitle">함께 지낼 아이를 알려 주세요</h1>
+
+      <div class="cf-field" id="fSpecies">
+        <span class="cf-label" id="lSpecies">종류</span>
+        <div class="cf-opts" role="radiogroup" aria-labelledby="lSpecies">
+          <button class="cf-opt" type="button" role="radio" aria-checked="false" data-species="dog">강아지</button>
+          <button class="cf-opt" type="button" role="radio" aria-checked="false" data-species="cat">고양이</button>
+        </div>
+        <p class="cf-note" data-note hidden>종류를 골라 주세요</p>
+      </div>
+
+      <div class="cf-field" id="fName">
+        <label class="cf-label" for="nameInput">이름</label>
+        <input class="cf-input" id="nameInput" type="text" maxlength="20" autocomplete="off" enterkeyhint="done">
+        <p class="cf-note" data-note hidden>이름을 적어 주세요</p>
+      </div>
+
+      <div class="cf-field" id="fSex">
+        <span class="cf-label" id="lSex">성별</span>
+        <div class="cf-opts" role="radiogroup" aria-labelledby="lSex">
+          <button class="cf-opt" type="button" role="radio" aria-checked="false" data-sex="male">남아</button>
+          <button class="cf-opt" type="button" role="radio" aria-checked="false" data-sex="female">여아</button>
+        </div>
+        <p class="cf-note" data-note hidden>성별을 골라 주세요</p>
+      </div>
+    </div>
+    <footer class="cf-foot">
+      <button class="cf-cta" id="basicsNext" type="button">다음</button>
+    </footer>
+  </section>
+
+  <!-- ============ 2. 사진 자료 ============ -->
+  <section class="screen cf-screen" data-screen="photos" aria-labelledby="photosTitle">
+    <header class="cf-top">
+      <button class="icon-btn" id="photosBack" type="button" aria-label="뒤로">
+        <svg width="22" height="22" aria-hidden="true"><use href="#i-back"/></svg>
+      </button>
+    </header>
+    <div class="cf-body scroll">
+      <h1 class="cf-title" id="photosTitle"></h1>
+      <p class="cf-sub" id="photosSub">얼굴과 몸이 잘 보이는 사진 2~5장을 골라 주세요.</p>
+      <div class="cf-grid" id="photoGrid"></div>
+      <p class="cf-count" id="photoCount" aria-live="polite"></p>
+      <input id="fileInput" type="file" accept="image/png,image/jpeg,image/webp" multiple hidden>
+    </div>
+    <footer class="cf-foot">
+      <p class="cf-msg" id="photosMsg" role="status"></p>
+      <button class="cf-cta" id="photosNext" type="button">이 사진으로 계속</button>
+    </footer>
+  </section>
+
+  <!-- ============ 3. 준비 중 (후보 · 생활 모습 공용) ============ -->
+  <section class="screen cf-screen" data-screen="waiting" aria-labelledby="waitTitle">
+    <header class="cf-top"></header>
+    <div class="cf-body">
+      <div class="cf-wait-art" id="waitArt" aria-hidden="true">
+        <div class="cf-pool"></div>
+        <div class="cf-stack" id="waitStack"></div>
+      </div>
+      <div id="waitLive">
+        <h1 class="cf-title cf-center" id="waitTitle"></h1>
+        <ol class="cf-steps" id="waitSteps" aria-live="polite"></ol>
+      </div>
+      <div class="cf-fail" id="waitFail" hidden>
+        <h1 class="cf-title cf-center" id="failTitle"></h1>
+        <p class="cf-sub cf-center" id="failSub"></p>
+      </div>
+    </div>
+    <footer class="cf-foot">
+      <p class="cf-quiet cf-center" id="waitNote"></p>
+      <div class="cf-actions" id="failActions" hidden></div>
+    </footer>
+  </section>
+
+  <!-- ============ 4. 후보 선택 ============ -->
+  <section class="screen cf-screen" data-screen="candidates" aria-labelledby="candTitle">
+    <header class="cf-top cf-top-end">
+      <button class="cf-link" id="pauseBtn" type="button">지금은 그만 보기</button>
+    </header>
+    <div class="cf-body scroll">
+      <h1 class="cf-title" id="candTitle"></h1>
+      <p class="cf-sub">얼굴, 무늬, 몸의 비율을 하나씩 비교해 보세요.</p>
+      <div class="cf-stage" id="stage">
+        <div class="cf-pool"></div>
+        <span class="cf-floor"></span>
+        <span class="cf-ring" id="pickRing"></span>
+        <button class="cf-portrait" id="portrait" type="button" aria-pressed="false">
+          <img id="portraitImg" alt="" draggable="false">
+        </button>
+        <div class="cf-stage-msg" id="stageMsg" hidden></div>
+        <button class="cf-link cf-compare" id="compareBtn" type="button" hidden>내 사진 보기</button>
+      </div>
+      <p class="cf-picked" id="picked" aria-live="polite"></p>
+      <div class="cf-thumbs" id="thumbs" role="group" aria-label="준비된 모습"></div>
+    </div>
+    <footer class="cf-foot">
+      <p class="cf-msg" id="candMsg" role="status"></p>
+      <button class="cf-cta" id="candNext" type="button">이 모습으로 계속</button>
+      <div class="cf-links">
+        <button class="cf-link" id="correctBtn" type="button">조금 다른 점 알려 주기</button>
+        <button class="cf-link" id="redoBtn" type="button">다시 준비하기</button>
+      </div>
+    </footer>
+  </section>
+
+  <!-- ============ 4-1. 그만 보기 (정서적 퇴로) ============ -->
+  <section class="screen cf-screen" data-screen="paused" aria-labelledby="pausedTitle">
+    <header class="cf-top"></header>
+    <div class="cf-body cf-rest">
+      <h1 class="cf-title cf-center" id="pausedTitle"></h1>
+      <p class="cf-sub cf-center">보고 싶을 때 여기서 이어서 볼 수 있어요.</p>
+    </div>
+    <footer class="cf-foot">
+      <button class="cf-cta cf-cta-quiet" id="resumeBtn" type="button">모습 다시 보기</button>
+    </footer>
+  </section>
+
+  <!-- ============ 5. 첫 만남 ============ -->
+  <section class="screen" data-screen="meet" aria-label="첫 만남">
+    <div class="room" id="meetRoom">
+      <div class="window"></div>
+      <div class="glow"></div>
+      <div class="baseboard"></div>
+      <div class="floor"><div class="pool"></div></div>
+      <div class="rug"></div>
+      <div class="grain"></div>
+    </div>
+    <div class="cf-meet-scrim"></div>
+    <p class="cf-meet-line" id="meetLine" aria-live="polite"></p>
+  </section>
+
+  <!-- sheets -->
+  <div class="sheet-wrap" id="correctSheet">
+    <div class="backdrop" data-close></div>
+    <div class="sheet cf-sheet" role="dialog" aria-modal="true" aria-labelledby="correctTitle">
+      <div class="grab"></div>
+      <div class="cf-sheet-head">
+        <img class="cf-sheet-thumb" id="correctThumb" alt="">
+        <div>
+          <h2 class="cf-sheet-title" id="correctTitle">조금 다른 점이 있나요?</h2>
+          <p class="cf-sheet-sub">고른 모습은 그대로 두고, 집에서 지낼 모습을 준비할 때 참고할게요.</p>
+        </div>
+      </div>
+      <label class="cf-label" for="corrShape">얼굴·귀 모양</label>
+      <input class="cf-input" id="corrShape" type="text" maxlength="80" placeholder="예: 귀가 조금 더 커요" autocomplete="off">
+      <label class="cf-label" for="corrMarkings">털색·무늬</label>
+      <input class="cf-input" id="corrMarkings" type="text" maxlength="80" placeholder="예: 왼쪽 귀가 더 짙은 갈색이에요" autocomplete="off">
+      <p class="cf-msg" id="correctMsg" role="status"></p>
+      <button class="cf-cta" id="correctGo" type="button">이렇게 알려 주고 계속</button>
+    </div>
+  </div>
+
+  <div class="sheet-wrap" id="redoSheet">
+    <div class="backdrop" data-close></div>
+    <div class="sheet cf-sheet" role="dialog" aria-modal="true" aria-labelledby="redoTitle">
+      <div class="grab"></div>
+      <h2 class="cf-sheet-title" id="redoTitle">다시 준비할까요?</h2>
+      <p class="cf-sheet-sub">지금 모습은 그대로 남아 있어요.</p>
+      <button class="cf-row" id="redoAdd" type="button">
+        <b>사진 더하기</b><span>다른 각도의 사진을 더해 새 모습을 받아요</span>
+      </button>
+      <button class="cf-row" id="redoSame" type="button">
+        <b>같은 사진으로 새 모습 받기</b><span>지금 사진으로 한 번 더 준비해요</span>
+      </button>
+      <p class="cf-sheet-sub cf-repeat" id="redoRepeat" hidden>여러 번 준비했다면, 지금은 그만 보고 나중에 이어서 해도 괜찮아요.</p>
+    </div>
+  </div>
+
+  <div class="sheet-wrap" id="compareSheet">
+    <div class="backdrop" data-close></div>
+    <div class="sheet cf-sheet" role="dialog" aria-modal="true" aria-label="내 사진">
+      <div class="grab"></div>
+      <div class="cf-compare-row scroll" id="compareRow"></div>
+    </div>
+  </div>
+
+</div>
+
+<script type="module" src="create.js"></script>
+</body>
+</html>

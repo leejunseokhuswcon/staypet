@@ -344,13 +344,25 @@
   var SPOTS = [ {x:22,y:386}, {x:184,y:366}, {x:92,y:500}, {x:200,y:554}, {x:34,y:606}, {x:146,y:462} ];
   var spotI = 0, petEl, petFlip, walkTimer, settleTimer, antTimer;
 
+  /* A backend-generated character (home-character.js → 'staypet:character')
+     replaces the placeholder art. Only presentation changes; the life loop,
+     petting zones and economy are untouched. */
+  var character = null;
+  function petMarkup(uid) { return character ? character.markup : petSVG(uid); }
+  // name + particle, so a generated pet's own name reads correctly (보리가 / 콩이)
+  function nm(pair) {
+    var c = state.name.charCodeAt(state.name.length - 1);
+    var fin = c >= 0xAC00 && c <= 0xD7A3 && (c - 0xAC00) % 28 !== 0;
+    return state.name + (pair === '을/를' ? (fin ? '을' : '를') : (fin ? '이' : '가'));
+  }
+
   function buildPet() {
     petEl = document.createElement('div');
     petEl.className = 'pet'; petEl.id = 'pet';
     petEl.dataset.act = 'idle'; petEl.dataset.facing = 'left';
     petFlip = document.createElement('div');
     petFlip.className = 'pet-flip';
-    petFlip.innerHTML = petSVG('home');
+    petFlip.innerHTML = petMarkup('home');
     petEl.appendChild(petFlip);
     room.appendChild(petEl);
     var sp = SPOTS[spotI];
@@ -604,9 +616,9 @@
           '<span class="n" id="focusN">' + state.hearts + '</span></span>' +
       '</div>' +
       '<div class="stage" id="stage"><div class="pet" id="fpet" data-act="idle" data-facing="left">' +
-          '<div class="pet-flip">' + petSVG('focus') + '</div></div></div>' +
+          '<div class="pet-flip">' + petMarkup('focus') + '</div></div></div>' +
       '<div class="focus-foot">' +
-        (firstHint ? '<div class="rub-hint" id="rubHint"><span class="trace"></span>손가락으로 ' + state.name + '를 천천히 쓰다듬어 주세요.</div>' : '') +
+        (firstHint ? '<div class="rub-hint" id="rubHint"><span class="trace"></span>손가락으로 ' + nm('을/를') + ' 천천히 쓰다듬어 주세요.</div>' : '') +
         '<div class="reaction" id="react"></div>' +
       '</div>';
     device.appendChild(w);
@@ -647,20 +659,20 @@
       g = null;
       var react = $('#react'); if (!react) return;
       if (!zone) {
-        if (onPet) { react.textContent = state.name + '가 살짝 움직였어요'; react.className = 'reaction'; }
+        if (onPet) { react.textContent = nm('이/가') + ' 살짝 움직였어요'; react.className = 'reaction'; }
         return;
       }
       if (!moved) {                                   // a tap is not petting
-        react.textContent = state.name + '가 눈을 깜박였어요'; react.className = 'reaction';
+        react.textContent = nm('이/가') + ' 눈을 깜박였어요'; react.className = 'reaction';
         return;
       }
       var rh = $('#rubHint'); if (rh) rh.remove();
       if (zone === PREFERRED) {
-        react.textContent = state.name + '가 기분 좋아해요'; react.className = 'reaction reward';
+        react.textContent = nm('이/가') + ' 기분 좋아해요'; react.className = 'reaction reward';
         $('#fpet').classList.remove('glad'); void $('#fpet').offsetWidth; $('#fpet').classList.add('glad');
         reward(x, y);
       } else {
-        react.textContent = state.name + '가 편하게 몸을 맡겼어요'; react.className = 'reaction';
+        react.textContent = nm('이/가') + ' 편하게 몸을 맡겼어요'; react.className = 'reaction';
       }
     });
   }
@@ -920,7 +932,7 @@
   function runTutorial(step) {
     if (screenNow() !== 'home') { tutorialStep(step, 700); return; }   // wait until she is on screen
     if (step === TUT.PET) {
-      showHint(state.name + '를 눌러 보세요.', '#pet');
+      showHint(nm('을/를') + ' 눌러 보세요.', '#pet');
     }
     else if (step === TUT.FEED_PLACE) {
       say('배고파 보여요', 1800);
@@ -1017,6 +1029,17 @@
   /* facilitator annotation toggle — never exposed to participants */
   document.addEventListener('keydown', function (e) {
     if (e.key === 'd' || e.key === 'D') document.body.classList.toggle('annotate');
+  });
+
+  document.addEventListener('staypet:character', function (e) {
+    character = e.detail;
+    if (character.name) state.name = character.name;
+    if (petFlip) petFlip.innerHTML = character.markup;
+    var f = $('#fpet .pet-flip'); if (f) f.innerHTML = character.markup;
+    $('#life').setAttribute('aria-label', state.name + '의 생활 상태');
+    $('#sheetWrap .sheet').setAttribute('aria-label', state.name + '의 생활 상태');
+    $('#visit .vt span').textContent = '오늘도 ' + nm('이/가') + ' 기다리고 있었어요.';
+    var h = $('#hint'); if (h && hintTarget === '#pet') h.textContent = nm('을/를') + ' 눌러 보세요.';
   });
 
   /* ---------- boot ---------- */
